@@ -11,6 +11,6 @@ interface CardWrapperProps {
 
 export default function CardWrapper({ children, className }: CardWrapperProps) {
   return (
-    <Card className={cn("max-w-[480px] shadow-md", className)}>{children}</Card>
+    <Card className={cn("max-w-[1080px] shadow-md", className)}>{children}</Card>
   );
 }

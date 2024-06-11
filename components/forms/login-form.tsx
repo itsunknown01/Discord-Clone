@@ -1,9 +1,11 @@
-"use client"
+"use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { signIn } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,11 +18,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { LoginSchema } from "@/schemas";
-import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
   const router = useRouter();
-  const [loading, startTransition] = useTransition();
+  const [isLoading,setIsLoading] = useState<boolean>(false)
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -31,12 +32,18 @@ const LoginForm = () => {
   });
 
   const LoginSubmit = async (values: z.infer<typeof LoginSchema>) => {
-    startTransition(() => {
-      console.log(values)
-     if(values) {
-      router.push(`/channels/@me`)
-   }
-    });
+    setIsLoading(true)
+    try {
+      await signIn("credentials", {
+        ...values,
+        redirect: false
+      })
+      router.push('/channels/@me')
+      setIsLoading(false)
+    } catch (error) {
+      console.error(error);
+    }
+    form.reset();
   };
 
   return (
@@ -53,7 +60,7 @@ const LoginForm = () => {
                   <Input
                     type="email"
                     placeholder="Enter your email"
-                    disabled={loading}
+                    disabled={isLoading}
                     {...field}
                   />
                 </FormControl>
@@ -71,7 +78,7 @@ const LoginForm = () => {
                   <Input
                     type="password"
                     placeholder="Enter your password"
-                    disabled={loading}
+                    disabled={isLoading}
                     {...field}
                   />
                 </FormControl>
@@ -80,7 +87,7 @@ const LoginForm = () => {
             )}
           />
         </div>
-        <Button disabled={loading} type="submit" className="w-full">
+        <Button disabled={isLoading} type="submit" className="w-full">
           Login
         </Button>
       </form>

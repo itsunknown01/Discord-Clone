@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
+import { useRegisterUserMutation } from "@/hooks/redux/auth/authSlice";
 import { RegisterSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "../ui/button";
@@ -17,20 +17,26 @@ import {
 import { Input } from "../ui/input";
 
 const RegisterForm = () => {
-  const [loading, startTransition] = useTransition();
+  const [registerUser, { isLoading, isSuccess, isError, error }] =
+    useRegisterUserMutation();
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: "",
       password: "",
       name: "",
+      username: "",
+      dateofbirth: "",
     },
   });
 
   const handleSubmit = async (values: z.infer<typeof RegisterSchema>) => {
-    startTransition(() => {
-     console.log(values)
-    });
+    try {
+      const userData = await registerUser(values).unwrap();
+      console.log(userData);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -46,7 +52,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
-                    disabled={loading}
+                    disabled={isLoading}
                     placeholder="Enter email"
                     type="email"
                   />
@@ -64,7 +70,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
-                    disabled={loading}
+                    disabled={isLoading}
                     placeholder="Enter name"
                     type="text"
                   />
@@ -82,7 +88,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
-                    disabled={loading}
+                    disabled={isLoading}
                     placeholder="Enter username"
                     type="text"
                   />
@@ -100,7 +106,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
-                    disabled={loading}
+                    disabled={isLoading}
                     placeholder="Enter password"
                     type="password"
                   />
@@ -116,18 +122,14 @@ const RegisterForm = () => {
               <FormItem>
                 <FormLabel>Date of Birth</FormLabel>
                 <FormControl>
-                  <Input
-                    {...field}
-                    type="date"
-                    disabled={loading}
-                  />
+                  <Input {...field} type="date" disabled={isLoading} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        <Button type="submit" disabled={loading} className="w-full">
+        <Button type="submit" disabled={isLoading} className="w-full">
           Continue
         </Button>
       </form>

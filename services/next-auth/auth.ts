@@ -1,63 +1,68 @@
-import NextAuth from "next-auth"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import authConfig from "./auth.config"
+import NextAuth from "next-auth";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import authConfig from "./auth.config";
 
-import { db } from "../db"
-import { getUserById } from "../auth/user"
- 
-export const { handlers: {GET,POST}, signIn, signOut, auth } = NextAuth({
+import { db } from "../db";
+import { getUserById } from "../auth/user";
+
+export const {
+  handlers: { GET, POST },
+  signIn,
+  signOut,
+  auth,
+} = NextAuth({
   pages: {
     signIn: "/login",
-    error: "/error"
+    error: "/error",
   },
   secret: process.env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(db),
   session: {
-    strategy: "database",
-    maxAge: 30 * 24 * 60 *60,
+    strategy: "jwt",
   },
   events: {
-    async linkAccount({user}) {
+    async linkAccount({ user }) {
       await db.user.update({
-        where: {id: user.id},
-        data: {emailVerified: new Date()}
-      })
-    }
+        where: { id: user.id },
+        data: { emailVerified: new Date() },
+      });
+    },
   },
   callbacks: {
-    async signIn({ user, account}) {
-      if(account?.provider !== "credentials") return true
+    async signIn({ user, account }) {
+      if (account?.provider !== "credentials") return true;
 
       const existingUser = await getUserById(user.id);
 
       // if(!existingUser?.emailVerified) return false
 
-      return true
+      return true;
     },
-    async session({token, session}) {
-      if(token.sub && session.user) {
-         session.user.id = token.sub
+    async session({ token, session }) {
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
       }
 
-      if(session.user) {
-        session.user.name = token.name
-        session.user.email = token.email as string
+      if (session.user) {
+        session.user.name = token.name;
+        session.user.email = token.email as string;
       }
 
-      return session
+      console.log(token)
+      return session;
     },
-    async jwt({token}) {
-      if (!token.sub) return token
+    async jwt({ token }) {
+      if (!token.sub) return token;
 
-      const existingUser = await getUserById(token.sub)
+      const existingUser = await getUserById(token.sub);
 
-      if(!existingUser) return token
+      if (!existingUser) return token;
 
-      token.name = existingUser.name
-      token.email = existingUser.email
+      token.name = existingUser.name;
+      token.email = existingUser.email;
 
-      return token
-    }
+      return token;
+    },
   },
   ...authConfig,
-})
+});

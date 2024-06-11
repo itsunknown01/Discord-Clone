@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import NextAuthProvider from "@/components/providers/nextAuth-provider";
+import NextAuthProvider from "@/components/providers/next-auth-provider";
 import { auth } from "@/services/next-auth/auth";
 import ReduxProvider from "@/components/providers/redux-provider";
+import { ModalProvider } from "@/components/providers/modal-provider";
+import { ModalContextProvider } from "@/hooks/customs/use-modal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +24,12 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <NextAuthProvider session={session}>
-          <ReduxProvider>{children}</ReduxProvider>
+          <ReduxProvider>
+            <ModalContextProvider>
+              <ModalProvider />
+              {children}
+            </ModalContextProvider>
+          </ReduxProvider>
         </NextAuthProvider>
       </body>
     </html>

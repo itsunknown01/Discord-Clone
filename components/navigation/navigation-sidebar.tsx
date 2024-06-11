@@ -3,9 +3,10 @@
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";
-import SidebarMenuItem from "../conversation/sidebar-menu-item";
-import { Separator } from "../ui/separator";
-import { ScrollArea } from "../ui/scroll-area";
+import SidebarMenuItem from "@/components/conversation/sidebar-menu-item";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import NavigationAction from "./naviagation-action";
 
 const NavigationSidebar = () => {
   const [active, setActive] = useState<string>("default");
@@ -31,13 +32,14 @@ const NavigationSidebar = () => {
           onClick={() => setActive("1")}
           label="server 1"
           notificationCount={1}
-          className="mx-auto my-2"
+          className="mx-auto mb-4"
           image={{
             url: "/discord-image.jpg",
-            alt: "server 1"
+            alt: "server 1",
           }}
           isActive={active === "1"}
         />
+        <NavigationAction className="mx-auto my-2.5" />
       </ScrollArea>
     </div>
   );

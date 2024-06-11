@@ -36,9 +36,10 @@ const SidebarMenuItem = ({
     <ActionTooltip side="right" align="center" label={label}>
       <Link
         className={cn(
-          "group relative block h-12 w-12 bg-foreground bg-cover transition-all hover:shadow-xl",
+          "group relative flex h-12 w-12 bg-foreground bg-cover transition-all hover:shadow-xl",
           "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
           "focus-visible:ring-offset-background active:translate-y-[1px] hover:bg-blue-500",
+          isActive ? "bg-blue-500" : "dark:bg-neutral-700",
           roundClasses,
           className
         )}
@@ -59,18 +60,17 @@ const SidebarMenuItem = ({
           <Image
             src={image.url}
             alt={image.alt}
-            width={48}
-            height={48}
+            fill
             unoptimized
             priority
             loader={({ src }) => `${src}`}
             className={cn(
-              "absolute inset-0 transition-all object-contain",
+              "absolute inset-0 transition-all object-contain w-full h-full",
               roundClasses
             )}
           />
         ) : (
-          <BsDiscord fontSize={26} />
+          <BsDiscord fontSize={26} color="white" />
         )}
       </Link>
     </ActionTooltip>

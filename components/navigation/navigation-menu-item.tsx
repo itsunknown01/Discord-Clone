@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import BorderedBadge from "../ui/border-badge";
 import Image from "next/image";
 
-interface SidebarMenuItemProps
+interface NavigationMenuItemProps
   extends React.ComponentPropsWithoutRef<typeof Link> {
   isActive?: boolean;
   className?: string;
@@ -20,14 +20,14 @@ interface SidebarMenuItemProps
   };
 }
 
-const SidebarMenuItem = ({
+const NavigationMenuItem = ({
   isActive,
   className,
   label,
   notificationCount,
   image,
   ...props
-}: SidebarMenuItemProps) => {
+}: NavigationMenuItemProps) => {
   const roundClasses = isActive
     ? "rounded-[15px]"
     : "rounded-full hover:rounded-[15px]";
@@ -77,4 +77,4 @@ const SidebarMenuItem = ({
   );
 };
 
-export default SidebarMenuItem;
+export default NavigationMenuItem;

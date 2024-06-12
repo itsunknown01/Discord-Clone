@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";
-import SidebarMenuItem from "@/components/conversation/sidebar-menu-item";
+import SidebarMenuItem from "@/components/navigation/navigation-menu-item";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import NavigationAction from "./naviagation-action";

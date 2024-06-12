@@ -38,7 +38,7 @@ const LoginForm = () => {
         ...values,
         redirect: false
       })
-      router.push('/channels/@me')
+      router.push('/channels/me')
       setIsLoading(false)
     } catch (error) {
       console.error(error);

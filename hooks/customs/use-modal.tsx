@@ -2,7 +2,7 @@
 
 import { ReactNode, createContext, useContext, useState } from "react";
 
-export type ModalType = "createServer";
+export type ModalType = "createServer" | "searchModal";
 
 interface ModalContextType {
   type: ModalType | null;

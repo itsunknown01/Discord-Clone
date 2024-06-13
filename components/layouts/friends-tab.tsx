@@ -1,15 +1,14 @@
 "use client";
 
+import { useFriendsTabStore } from "@/hooks/customs/use-friends-tab";
 import { FriendsTabEnum, friendsTabsProps } from "@/lib/mock-data/friends";
-import { TabGroup, TabGroupButton } from "../ui/tab-group";
 import Badge from "../ui/badge";
-import { useState } from "react";
+import { TabGroup, TabGroupButton } from "../ui/tab-group";
 
 export default function FriendsTabs() {
   const PendingBadge = <Badge className="ml-1" count={2} />;
-  const [currentTab, setCurrentTab] = useState<FriendsTabEnum>(
-    FriendsTabEnum.Available
-  );
+  const {currentTab,setCurrentTab} = useFriendsTabStore();
+
   return (
     <TabGroup>
       {Object.values(friendsTabsProps).map((item) => (

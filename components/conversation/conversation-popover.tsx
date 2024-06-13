@@ -15,6 +15,7 @@ import {
 } from "@/lib/mock-data/mock";
 import { ListItem } from "../ui/list";
 import Avatar from "../ui/avatar";
+import { useFriendStore } from "@/hooks/customs/use-friends-store";
 
 interface ConversationPopoverProps {
   position: string;
@@ -37,7 +38,7 @@ const ConversationPopover = ({
   position,
   setOpen,
 }: ConversationPopoverProps) => {
-  const [friends, setFriends] = useState<User[]>([]);
+  const {friends, setFriends} = useFriendStore();
   const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
@@ -47,11 +48,11 @@ const ConversationPopover = ({
     };
 
     fetchFriends();
-  }, []);
+  }, [setFriends]);
 
-  const partFriends = friends.slice(0, 6);
+  const partFriends = friends?.slice(0, 6);
 
-  const filterFriends = partFriends.filter((user) => {
+  const filterFriends = partFriends?.filter((user) => {
     return normalizedCompare(user.name, search);
   });
 
@@ -78,13 +79,13 @@ const ConversationPopover = ({
         <Separator className="mt-4 h-[1px] w-full bg-[#242628]" />
 
         <div className="h-[200px] max-w-[400px] overflow-y-auto px-2">
-          {filterFriends.length === 0 ? (
+          {filterFriends?.length === 0 ? (
             <p className="w-full text-gray-400">
               No friends found who are currently not in this private
               conversation.
             </p>
           ) : (
-            filterFriends.map((friend, index) => (
+            filterFriends?.map((friend, index) => (
               <ListItem key={index}>
                 <Avatar
                   alt={friend.name}

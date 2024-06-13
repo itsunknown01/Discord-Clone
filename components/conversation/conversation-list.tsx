@@ -12,6 +12,7 @@ import { List } from "../ui/list";
 import ConversationHeader from "./conversation-header";
 import ConversationListItem from "./conversation-list-item";
 import { useParams } from "next/navigation";
+import { useChannelStore } from "@/hooks/customs/use-channel-store";
 
 const getData = async (): Promise<{ channels: ListedDMChannel[] }> => {
   const channels: ListedDMChannel[] = generateRandomFakeChannels(MOCK_CHANNELS);
@@ -21,7 +22,7 @@ const getData = async (): Promise<{ channels: ListedDMChannel[] }> => {
 
 const ConversationList = () => {
   const params = useParams();
-  const [channels, setChannels] = useState<ListedDMChannel[]>();
+  const {channels, setChannels} = useChannelStore();
 
   useEffect(() => {
     const fetchChannels = async () => {
@@ -30,7 +31,7 @@ const ConversationList = () => {
     };
 
     fetchChannels();
-  }, []);
+  }, [setChannels]);
 
   const handleChannelDelete = (channelId: string) => {
     if (channels !== null) {

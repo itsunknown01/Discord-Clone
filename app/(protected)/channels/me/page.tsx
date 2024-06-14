@@ -36,7 +36,7 @@ const MePage = async () => {
             <BsPersonFill className="text-gray-500" fontSize={22} />
             Friends
           </div>
-          <Separator orientation="vertical" />
+          <Separator orientation="vertical" className="h-4 mt-1 bg-white" />
           <FriendsTabs />
         </div>
       </PageHeader>

@@ -6,7 +6,7 @@ import ConversationList from "./conversation-list";
 
 const ConversationSidebar = () => {
   return (
-    <div className="h-screen w-60 bg-zinc-800 flex flex-col">
+    <div className="h-full w-60 bg-zinc-800 flex flex-col">
       <Header verticalPadding="px-2" className="bg-zinc-800">
         <FindChatButton />
       </Header>

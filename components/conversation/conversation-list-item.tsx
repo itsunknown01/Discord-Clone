@@ -18,7 +18,7 @@ export default function ConversationListItem({
     <ListItem
       noVerticalPadding
       active={active}
-      href={`/channels/${channel.id}`}
+      href={`/channels/me/${channel.id}`}
       className="group gap-3 py-1.5"
     >
       <Avatar

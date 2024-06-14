@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import { Channel, ChannelType } from "./channel";
 
 export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -13,7 +14,6 @@ export const normalizedCompare = (a: string, b: string) => {
     .toLowerCase()
     .includes(normalizeString(b).toLowerCase());
 };
-
 
 export enum StaticUserStatuses {
   Online = "online",
@@ -54,6 +54,13 @@ enum ActivityTypes {
   Watching = "watching",
 }
 
+export type ListedServer = {
+  id: string;
+  name: string;
+  photo: string;
+  messages?: number;
+};
+
 export type ListedDMChannel = {
   id: string;
   name: string;
@@ -64,7 +71,7 @@ export type ListedDMChannel = {
 };
 
 const generatePastHoursDate = (hours: number) =>
-    new Date(Date.now() - hours * 60 * 60 * 1000);
+  new Date(Date.now() - hours * 60 * 60 * 1000);
 
 const currentActivity: Activity = {
   type: ActivityTypes.Playing,
@@ -98,4 +105,22 @@ export const generateRandomFakeUsers = (length: number): User[] =>
     status: faker.helpers.arrayElement(Object.values(StaticUserStatuses)),
     activity: i === 0 ? currentActivity : undefined,
     type: "user",
+  }));
+
+export const generateRandomChannelsFake = (length: number): Channel[] =>
+  Array.from({ length }, (_, i) => ({
+    id: generateRandomDiscordID(),
+    name: faker.animal.dog(),
+    type: ChannelType.TEXT,
+  }));
+
+export const generateRandomFakeServers = (length: number): ListedServer[] =>
+  Array.from({ length }, (_, i) => ({
+    id: generateRandomDiscordID(),
+    name: faker.animal.cow(),
+    photo: faker.image.urlPicsumPhotos({
+      width: 64,
+      height: 64,
+    }),
+    messages: i === 0 ? 3 : undefined,
   }));

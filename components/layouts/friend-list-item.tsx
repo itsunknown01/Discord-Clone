@@ -48,7 +48,7 @@ export default function FriendListItem({ friend, tab }: FriendListItemProps) {
   };
   return (
     <ListItem
-      href={tab.key === FriendsTabEnum.Pending ? "" : `/channels/${friend.id}`}
+      href={tab.key === FriendsTabEnum.Pending ? "" : `/channels/me/${friend.id}`}
       className={`group justify-between border-t-[1px] border-gray-800 py-2.5 pr-3 `}
       noVerticalPadding
     >

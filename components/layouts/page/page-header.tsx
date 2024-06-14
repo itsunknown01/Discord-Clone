@@ -107,10 +107,10 @@ const PageHeader = ({
                   </TooltipTrigger>
                   {messageIconIndex && (
                     <Separator
-                      className={`${
+                      orientation="vertical"
+                      className={`h-4 mt-1 bg-white ${
                         messageIconIndex ? "hidden md:block" : null
                       }`}
-                      orientation="vertical"
                     />
                   )}
                   <TooltipContent

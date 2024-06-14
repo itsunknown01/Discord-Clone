@@ -7,7 +7,7 @@ import { TabGroup, TabGroupButton } from "../ui/tab-group";
 
 export default function FriendsTabs() {
   const PendingBadge = <Badge className="ml-1" count={2} />;
-  const {currentTab,setCurrentTab} = useFriendsTabStore();
+  const { currentTab, setCurrentTab } = useFriendsTabStore();
 
   return (
     <TabGroup>

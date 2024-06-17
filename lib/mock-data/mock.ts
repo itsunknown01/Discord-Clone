@@ -1,5 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { Channel, ChannelType } from "./channel";
+import { Server } from "@prisma/client";
 
 export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -15,6 +16,8 @@ export const normalizedCompare = (a: string, b: string) => {
     .includes(normalizeString(b).toLowerCase());
 };
 
+export type UserStatuses = StaticUserStatuses | string;
+
 export enum StaticUserStatuses {
   Online = "online",
   Idle = "idle",
@@ -23,15 +26,13 @@ export enum StaticUserStatuses {
   Mobile = "mobile",
 }
 
-export type UserStatuses = StaticUserStatuses | string;
-
 export type Activity = {
   type: ActivityTypes;
   name: string;
   since: Date;
 };
 
-export interface User {
+export interface Users {
   id: string;
   name: string;
   username?: string | null;
@@ -42,11 +43,6 @@ export interface User {
   type?: "user" | "bot";
 }
 
-export const MOCK_DELAY = 2000;
-export const MOCK_FRIENDS = 18;
-export const MOCK_CHANNELS = 18;
-export const MOCK_SERVERS = 18;
-
 enum ActivityTypes {
   Playing = "playing",
   Streaming = "streaming",
@@ -54,11 +50,24 @@ enum ActivityTypes {
   Watching = "watching",
 }
 
-export type ListedServer = {
-  id: string;
+export interface User {
   name: string;
-  photo: string;
-  messages?: number;
+  username: string;
+  email: string;
+  image: string
+  password: string;
+  dateOfBirth: string;
+}
+
+export const MOCK_DELAY = 2000;
+export const MOCK_FRIENDS = 18;
+export const MOCK_CHANNELS = 18;
+export const MOCK_SERVERS = 18;
+
+
+export type ListedServer = {
+  name: string;
+  imageUrl: string;
 };
 
 export type ListedDMChannel = {
@@ -95,7 +104,7 @@ export const generateRandomFakeChannels = (length: number): ListedDMChannel[] =>
     username: faker.internet.userName().toLowerCase(),
   }));
 
-export const generateRandomFakeUsers = (length: number): User[] =>
+export const generateRandomFakeUsers = (length: number): Users[] =>
   Array.from({ length }, (_, i) => ({
     id: generateRandomDiscordID(),
     name: faker.person.fullName(),
@@ -116,11 +125,25 @@ export const generateRandomChannelsFake = (length: number): Channel[] =>
 
 export const generateRandomFakeServers = (length: number): ListedServer[] =>
   Array.from({ length }, (_, i) => ({
-    id: generateRandomDiscordID(),
     name: faker.animal.cow(),
-    photo: faker.image.urlPicsumPhotos({
+    imageUrl: faker.image.urlPicsumPhotos({
       width: 64,
       height: 64,
     }),
-    messages: i === 0 ? 3 : undefined,
+  }));
+
+export const generateRandomUsersFake = (length: number): User[] =>
+  Array.from({ length }, (_, i) => ({
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    username: faker.internet.userName(),
+    password: "bootu123",
+    image: faker.image.urlPicsumPhotos({
+      width: 64,
+      height: 64,
+    }),
+    dateOfBirth: faker.date
+      .birthdate({ min: 18, max: 65 })
+      .toISOString()
+      .split("T")[0],
   }));

@@ -38,7 +38,7 @@ const LoginForm = () => {
         ...values,
         redirect: false
       })
-      router.push('/channels/me')
+      router.push('/channels')
       setIsLoading(false)
     } catch (error) {
       console.error(error);
@@ -59,8 +59,8 @@ const LoginForm = () => {
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="Enter your email"
                     disabled={isLoading}
+                    className="bg-zinc-900 border-none"
                     {...field}
                   />
                 </FormControl>
@@ -77,8 +77,8 @@ const LoginForm = () => {
                 <FormControl>
                   <Input
                     type="password"
-                    placeholder="Enter your password"
                     disabled={isLoading}
+                    className="bg-zinc-900 border-none "
                     {...field}
                   />
                 </FormControl>

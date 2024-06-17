@@ -1,9 +1,10 @@
 import { ListedDMChannel } from "@/lib/mock-data/mock";
+import { Friends } from "@prisma/client";
 import { create } from "zustand";
 
 type Channelstore = {
-  channels: ListedDMChannel[] | null;
-  setChannels: (channels: ListedDMChannel[]) => void;
+  channels: Friends[] | null;
+  setChannels: (channels: Friends[]) => void;
 };
 
 export const useChannelStore = create<Channelstore>((set) => ({

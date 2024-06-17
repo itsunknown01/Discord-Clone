@@ -1,9 +1,9 @@
-import { User } from "@/lib/mock-data/mock";
+import { Users } from "@/lib/mock-data/mock";
 import { create } from "zustand";
 
 interface CurrentUserState {
-  currentUser: User | null;
-  setCurrentUser: (user: User | null) => void;
+  currentUser: Users | null;
+  setCurrentUser: (user: Users | null) => void;
 }
 export const useCurrentUserStore = create<CurrentUserState>()((set) => ({
   currentUser: null,

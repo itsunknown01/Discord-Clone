@@ -4,22 +4,24 @@ import FriendsTabs from "@/components/layouts/friends-tab";
 import { Page, PageHeader } from "@/components/layouts/page";
 import PageContent from "@/components/layouts/page/page-content";
 import { Separator } from "@/components/ui/separator";
-import { MOCK_DELAY, MOCK_FRIENDS, User, delay, generateRandomFakeUsers } from "@/lib/mock-data/mock";
+import { MOCK_DELAY, MOCK_FRIENDS, Users, delay, generateRandomFakeUsers } from "@/lib/mock-data/mock";
+import { db } from "@/services/db";
+import { auth } from "@/services/next-auth/auth";
 import { BsPersonFill } from "react-icons/bs";
 
 interface FriendFetchData {
-  friends: User[];
-  friendRequests: User[];
-  blockedFriends: User[];
+  friends: Users[];
+  friendRequests: Users[];
+  blockedFriends: Users[];
 }
 
 const getData = async (): Promise<FriendFetchData> => {
   /*
    * Generating fake users for test
    */
-  const friends: User[] = generateRandomFakeUsers(MOCK_FRIENDS);
-  const friendRequests: User[] = generateRandomFakeUsers(6);
-  const blockedFriends: User[] = [];
+  const friends: Users[] = generateRandomFakeUsers(MOCK_FRIENDS);
+  const friendRequests: Users[] = generateRandomFakeUsers(6);
+  const blockedFriends: Users[] = [];
 
   await delay(MOCK_DELAY);
   return { friends, friendRequests, blockedFriends };
@@ -28,6 +30,15 @@ const getData = async (): Promise<FriendFetchData> => {
 
 const MePage = async () => {
   const data = await getData()
+  const session = await auth()
+  const userId = session?.user.id as string
+
+  const friends = await db.friends.findMany({
+    where: {
+      friendId: userId
+    }
+  })
+
   return (
     <Page>
       <PageHeader>
@@ -42,7 +53,7 @@ const MePage = async () => {
       </PageHeader>
       <PageContent className="flex-col lg:flex-row" padding="none">
         <div className="flex flex-1 px-6 pt-4">
-          <FriendsList {...data} />
+          <FriendsList friends={friends} />
         </div>
         <div className="flex md:w-[360px]">
          <ActiveNowPanel />

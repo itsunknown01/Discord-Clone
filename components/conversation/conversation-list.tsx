@@ -13,6 +13,7 @@ import ConversationHeader from "./conversation-header";
 import ConversationListItem from "./conversation-list-item";
 import { useParams } from "next/navigation";
 import { useChannelStore } from "@/hooks/customs/use-channel-store";
+import { Friends } from "@prisma/client";
 
 const getData = async (): Promise<{ channels: ListedDMChannel[] }> => {
   const channels: ListedDMChannel[] = generateRandomFakeChannels(MOCK_CHANNELS);
@@ -20,35 +21,37 @@ const getData = async (): Promise<{ channels: ListedDMChannel[] }> => {
   return { channels };
 };
 
-const ConversationList = () => {
+interface ConversationListProps {
+  friends: Friends[];
+}
+
+const ConversationList = ({ friends }: ConversationListProps) => {
   const params = useParams();
-  const {channels, setChannels} = useChannelStore();
+  const [friendsList,setFriendsList] = useState<Friends[]>([])
 
   useEffect(() => {
-    const fetchChannels = async () => {
-      const { channels: fetchedChannels } = await getData();
-      setChannels(fetchedChannels);
-    };
+    if(friends) {
+      setFriendsList(friends)
+    }
 
-    fetchChannels();
-  }, [setChannels]);
+  }, [friends]);
 
-  const handleChannelDelete = (channelId: string) => {
-    if (channels !== null) {
-      setChannels(channels?.filter((channel) => channel.id !== channelId));
+  const handleFriendDelete = (friendId: string) => {
+    if (friendsList !== null) {
+      setFriendsList(friendsList?.filter((friend) => friend.id !== friendId));
     }
   };
 
   return (
     <div className="pt-4">
-      <ConversationHeader />
+      <ConversationHeader friends={friends} />
       <List className="mt-1">
-        {channels?.map((channel) => (
+        {friendsList?.map((friend) => (
           <ConversationListItem
-            active={params.id === channel.id}
-            key={channel.id}
-            channel={channel}
-            onDelete={() => handleChannelDelete(channel.id)}
+            active={params.id === friend.id}
+            key={friend.id}
+            friend={friend}
+            onDelete={() => handleFriendDelete(friend.id)}
           />
         ))}
       </List>

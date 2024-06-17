@@ -3,9 +3,10 @@ import { StaticUserStatuses } from "@/lib/mock-data/mock"
 import Image from "next/image";
 import { BsDiscord } from "react-icons/bs";
 import StatusBadge from "@/components/ui/status-badge";
+import { UserStatus } from "@prisma/client";
 
 interface AvatarProps {
-  status?: StaticUserStatuses;
+  status?: UserStatus;
   size?: "sm" | "md" | "lg";
   src?: string | null;
   alt: string;

@@ -2,9 +2,10 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useChannelStore } from "./use-channel-store";
 import { User } from "@/lib/mock-data/mock";
+import { Friends } from "@prisma/client";
 
 export const useAddChannel = () => {
-  const [selectedFriend, setSelectedFriend] = React.useState<User | null>(null);
+  const [selectedFriend, setSelectedFriend] = React.useState<Friends | null>(null);
   const { channels, setChannels } = useChannelStore();
   const router = useRouter();
 

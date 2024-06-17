@@ -1,14 +1,13 @@
 "use client";
 
-import React from "react";
-import StarBackground from "../background/star-background";
-import CardWrapper from "./card-wrapper";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
-import Heading from "../ui/heading";
-import Link from "next/link";
-import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import Heading from "../ui/heading";
+import CardWrapper from "./card-wrapper";
 
 interface AuthWrapperProps {
   children: React.ReactNode;
@@ -31,7 +30,6 @@ export default function AuthWrapper({
 }: AuthWrapperProps) {
   return (
     <CardWrapper className={cn("flex", className)}>
-      <StarBackground className="w-full h-full -z-20" />
       <Card className="w-[480px] border-none">
         <CardHeader>
           <Heading title={title} description={description} />

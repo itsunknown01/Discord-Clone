@@ -1,25 +1,22 @@
-"use client"
+"use client";
 
-import { User } from "@/lib/mock-data/mock";
+import { Users } from "@/lib/mock-data/mock";
 import { TooltipProvider } from "../ui/tooltip";
 import ListData from "./list-data";
 import { useFriendsTabStore } from "@/hooks/customs/use-friends-tab";
 import { useFriendStore } from "@/hooks/customs/use-friends-store";
 import { useEffect } from "react";
 import { FriendsTabEnum, friendsTabsProps } from "@/lib/mock-data/friends";
+import { Friends } from "@prisma/client";
 
 interface FriendListProps {
-  friends: User[];
-  friendRequests: User[];
-  blockedFriends: User[];
+  friends: Friends[];
 }
 
 export default function FriendsList({
   friends,
-  friendRequests,
-  blockedFriends,
 }: FriendListProps) {
-    const { currentTab } = useFriendsTabStore();
+  const { currentTab } = useFriendsTabStore();
   const { setFriends } = useFriendStore();
 
   useEffect(() => {
@@ -33,6 +30,9 @@ export default function FriendsList({
     FriendsTabEnum.All,
     FriendsTabEnum.Available,
   ].includes(currentTab);
+
+  const friendRequests = friends.filter(friend => friend.status === "Online")
+  const blockedFriends = friends.filter(friend => friend.status === "Idle")
 
   const data = isAllOrAvailableTab
     ? friends

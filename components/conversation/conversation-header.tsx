@@ -7,8 +7,9 @@ import { cn } from "@/lib/utils";
 import { Popover, PopoverTrigger } from "../ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import ConversationPopover from "./conversation-popover";
+import { Friends } from "@prisma/client";
 
-const ConversationHeader = () => {
+const ConversationHeader = ({friends}: {friends: Friends[]}) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -34,7 +35,7 @@ const ConversationHeader = () => {
             </TooltipContent>
           </Tooltip>
         </div>
-        <ConversationPopover setOpen={setOpen} position="left-20" />
+        <ConversationPopover setOpen={setOpen} position="left-20" friend={friends} />
       </Popover>
     </TooltipProvider>
   );

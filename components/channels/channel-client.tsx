@@ -8,7 +8,7 @@ import {
 } from "react-icons/ai";
 import { CgSmileMouthOpen } from "react-icons/cg";
 
-import { User } from "@/lib/mock-data/mock";
+import { Users } from "@/lib/mock-data/mock";
 import { PageHeader } from "../layouts/page";
 import PageContent from "../layouts/page/page-content";
 import Avatar from "../ui/avatar";
@@ -21,6 +21,8 @@ import { Input } from "../ui/input";
 import { useState } from "react";
 import { useCurrentUserStore } from "@/hooks/customs/use-current-user-tab";
 import { MessageBox } from "./message-box";
+import { Hash } from "lucide-react";
+import { Friends } from "@prisma/client";
 
 interface Message {
   id: number;
@@ -30,7 +32,17 @@ interface Message {
   bot?: string;
 }
 
-export default function ChannelClient({ user }: { user: User | undefined }) {
+interface ChannelClientProps {
+  user: Friends | null;
+  type: "channel" | "direct";
+  name?: string;
+}
+
+export default function ChannelClient({
+  user,
+  type,
+  name,
+}: ChannelClientProps) {
   const { channels } = useChannelStore();
   const { friends, setFriends } = useFriendStore();
   const { currentUser } = useCurrentUserStore();
@@ -94,18 +106,29 @@ export default function ChannelClient({ user }: { user: User | undefined }) {
           <PageHeader user={user}>
             <div className="flex items-center gap-4">
               <div className="flex flex-none items-center gap-3 text-sm font-semibold">
-                <Avatar
-                  size="sm"
-                  src={user?.avatar}
-                  alt="avatar"
-                  status={user?.status}
-                />
-                {user?.name}
+                {type === "direct" && (
+                  <>
+                    <Avatar
+                      size="sm"
+                      src={user?.avatar}
+                      alt="avatar"
+                      status={user?.status}
+                    />
+                    {user?.name}
+                  </>
+                )}
+
+                {type === "channel" && (
+                  <>
+                    <Hash className="w-5 h-5 text-zinc-500 dark:text-zinc-400 mr-2" />
+                    {name}
+                  </>
+                )}
               </div>
             </div>
           </PageHeader>
-          <PageContent className="flex-col w-full h-full pb-6 pr-1">
-            <div className="max-h-[86vh] !overflow-y-auto">
+          <PageContent className="flex-col w-full h-screen pb-6 pr-1 min-h-0 mb-20">
+            <div className="max-h-[86vh] !overflow-y-auto flex flex-col justify-end min-h-full">
               <UserProfileInfo
                 user={user}
                 handleAddDelete={handleAddDelete}
@@ -142,7 +165,7 @@ export default function ChannelClient({ user }: { user: User | undefined }) {
                   <CgSmileMouthOpen className="hover:text-gray-300" size={22} />
                 </div>
               }
-              className="!relative bottom-0 left-0 right-0 mx-6 mb-4 w-auto bg-foreground"
+              className="mx-6 mb-4 w-auto bg-foreground"
             >
               <Input
                 className=" py-2 pl-12 pr-36 !placeholder-gray-600"

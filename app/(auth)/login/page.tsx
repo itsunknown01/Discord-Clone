@@ -8,7 +8,7 @@ export default function Login() {
       description="We're so excited to see you again"
       backButtonLink="/register"
       backButtonTitle="Don't have an account?"
-      className="bg-[#313338] border-none"
+      className="bg-[#313338] border-none p-4"
       login={true}
     >
       <LoginForm />

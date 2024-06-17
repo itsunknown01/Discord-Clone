@@ -8,7 +8,7 @@ import { Separator } from "../ui/separator";
 import {
   MOCK_DELAY,
   MOCK_FRIENDS,
-  User,
+  Users,
   delay,
   generateRandomFakeUsers,
   normalizedCompare,
@@ -16,39 +16,38 @@ import {
 import { ListItem } from "../ui/list";
 import Avatar from "../ui/avatar";
 import { useFriendStore } from "@/hooks/customs/use-friends-store";
+import { Friends } from "@prisma/client";
 
 interface ConversationPopoverProps {
   position: string;
   setOpen: (open: boolean) => void;
-}
-
-interface Friends {
-  friends: User[];
+  friend?:Friends[]
 }
 
 // mock data creation
-const getData = async (): Promise<Friends> => {
-  const friends: User[] = generateRandomFakeUsers(MOCK_FRIENDS);
+// const getData = async (): Promise<Friends> => {
+//   const friends: Users[] = generateRandomFakeUsers(MOCK_FRIENDS);
 
-  await delay(MOCK_DELAY);
-  return { friends };
-};
+//   await delay(MOCK_DELAY);
+//   return { friends };
+// };
 
 const ConversationPopover = ({
+  friend,
   position,
   setOpen,
+  
 }: ConversationPopoverProps) => {
   const {friends, setFriends} = useFriendStore();
   const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     const fetchFriends = async () => {
-      const { friends } = await getData();
-      if (friends) setFriends(friends);
+      if (friend) setFriends(friend);
     };
 
     fetchFriends();
-  }, [setFriends]);
+  }, [setFriends,friend]);
 
   const partFriends = friends?.slice(0, 6);
 

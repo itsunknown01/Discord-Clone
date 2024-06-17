@@ -5,7 +5,8 @@ import { ListItem } from "@/components/ui/list";
 import RoundedButton from "@/components/ui/rounded-button";
 import { useChannelStore } from "@/hooks/customs/use-channel-store";
 import { FriendsTab, FriendsTabEnum } from "@/lib/mock-data/friends";
-import { User } from "@/lib/mock-data/mock";
+import { Users } from "@/lib/mock-data/mock";
+import { Friends } from "@prisma/client";
 import { useState } from "react";
 import {
     BsChatLeftFill,
@@ -15,7 +16,7 @@ import {
 } from "react-icons/bs";
 
 interface FriendListItemProps {
-  friend: User;
+  friend: Friends;
   tab: FriendsTab;
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { FriendsTab } from "@/lib/mock-data/friends";
-import { User, normalizedCompare } from "@/lib/mock-data/mock";
+import { Users, normalizedCompare } from "@/lib/mock-data/mock";
 import InputField from "../ui/input-field";
 import { ChangeEvent, useMemo, useState } from "react";
 import { BsSearch, BsXLg } from "react-icons/bs";
@@ -10,10 +10,11 @@ import { Input } from "../ui/input";
 import { List } from "../ui/list";
 import FriendListItem from "./friend-list-item";
 import { EmptyBox } from "./empty-box";
+import { Friends } from "@prisma/client";
 
 interface ListDataProps {
   tab?: FriendsTab;
-  data?: User[];
+  data?: Friends[];
 }
 
 export default function ListData({ tab, data }: ListDataProps) {
@@ -23,14 +24,12 @@ export default function ListData({ tab, data }: ListDataProps) {
     setSearch(e.target.value);
   };
 
-  const filteredList = 
-      data?.filter((user) => {
-        const isMatchingName = !search || normalizedCompare(user.name, search);
-        return (
-          (tab?.status ? tab?.status.includes(user.status) : true) &&
-          isMatchingName
-        );
-      })
+  const filteredList = data?.filter((user) => {
+    const isMatchingName = !search || normalizedCompare(user.name, search);
+    return (
+      (tab?.status ? tab?.status.includes(user.status) : true) && isMatchingName
+    );
+  });
   return (
     <>
       {!!data?.length && (
@@ -71,7 +70,11 @@ export default function ListData({ tab, data }: ListDataProps) {
         {!!filteredList?.length ? (
           <List>
             {filteredList.map((friend) => (
-              <FriendListItem key={friend.id} tab={tab as FriendsTab} friend={friend} />
+              <FriendListItem
+                key={friend.id}
+                tab={tab as FriendsTab}
+                friend={friend}
+              />
             ))}
           </List>
         ) : (

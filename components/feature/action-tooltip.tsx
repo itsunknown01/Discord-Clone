@@ -25,7 +25,7 @@ const ActionTooltip = ({
             <TooltipContent side={side} align={align}>
             <p className='font-semibold text-sm capitalize'>
                     {label.toLowerCase()}
-                </p>
+            </p>
             </TooltipContent>
         </Tooltip>
     </TooltipProvider>

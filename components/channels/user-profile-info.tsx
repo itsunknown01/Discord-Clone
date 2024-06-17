@@ -1,8 +1,9 @@
-import { User } from "@/lib/mock-data/mock";
+import { Users } from "@/lib/mock-data/mock";
 import Avatar from "../ui/avatar";
+import { Friends } from "@prisma/client";
 
 interface UserProfileInfoProps {
-  user: User | undefined;
+  user: Friends | undefined;
   handleAddDelete: () => void;
   isFriend: boolean | undefined;
 }

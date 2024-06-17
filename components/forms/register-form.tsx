@@ -54,6 +54,7 @@ const RegisterForm = () => {
                     {...field}
                     disabled={isLoading}
                     placeholder="Enter email"
+                    className="bg-zinc-900 border-none"
                     type="email"
                   />
                 </FormControl>
@@ -72,6 +73,7 @@ const RegisterForm = () => {
                     {...field}
                     disabled={isLoading}
                     placeholder="Enter name"
+                    className="bg-zinc-900 border-none"
                     type="text"
                   />
                 </FormControl>
@@ -90,6 +92,7 @@ const RegisterForm = () => {
                     {...field}
                     disabled={isLoading}
                     placeholder="Enter username"
+                    className="bg-zinc-900 border-none"
                     type="text"
                   />
                 </FormControl>
@@ -108,6 +111,7 @@ const RegisterForm = () => {
                     {...field}
                     disabled={isLoading}
                     placeholder="Enter password"
+                    className="bg-zinc-900 border-none"
                     type="password"
                   />
                 </FormControl>
@@ -122,7 +126,12 @@ const RegisterForm = () => {
               <FormItem>
                 <FormLabel>Date of Birth</FormLabel>
                 <FormControl>
-                  <Input {...field} type="date" disabled={isLoading} />
+                  <Input
+                    {...field}
+                    type="date"
+                    disabled={isLoading}
+                    className="bg-zinc-900 border-none"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

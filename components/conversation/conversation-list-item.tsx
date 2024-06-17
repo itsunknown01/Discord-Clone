@@ -1,38 +1,38 @@
 import Avatar from "@/components/ui/avatar";
 import { ListItem } from "@/components/ui/list";
-import { ListedDMChannel } from "@/lib/mock-data/mock"; 
+import { Friends } from "@prisma/client";
 import { BsFillChatLeftTextFill, BsX } from "react-icons/bs";
 
 type ConversationListItemProps = {
   active?: boolean;
-  channel: ListedDMChannel;
+  friend: any;
   onDelete: () => void;
 };
 
 export default function ConversationListItem({
   active,
-  channel,
+  friend,
   onDelete,
 }: ConversationListItemProps) {
   return (
     <ListItem
       noVerticalPadding
       active={active}
-      href={`/channels/me/${channel.id}`}
+      href={`/channels/me/${friend.id}`}
       className="group gap-3 py-1.5"
     >
       <Avatar
-        src={channel.avatar}
-        alt={channel.name}
-        status={channel.status}
+        src={friend.avatar}
+        alt={friend.name}
+        status={friend.status}
         className="w-8 flex-none"
       />
       <div className="flex-1 truncate text-sm">
-        {channel.name}
-        {channel.activity && (
+        {friend.name}
+        {friend.activity && (
           <div className="h-4 truncate text-xs leading-3">
-            <span className="capitalize">{channel.activity?.type}</span>{" "}
-            {channel.activity?.name}{" "}
+            <span className="capitalize">{friend.activity?.type}</span>{" "}
+            {friend.activity?.name}{" "}
             <BsFillChatLeftTextFill
               fontSize={10}
               className="ml-0.5 inline-block"

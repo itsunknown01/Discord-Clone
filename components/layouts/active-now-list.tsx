@@ -14,6 +14,7 @@ import { useFriendStore } from "@/hooks/customs/use-friends-store";
 import { StaticUserStatuses } from "@/lib/mock-data/mock";
 import { ActivityTypes, calculateHoursBetweenDates } from "@/lib/mock-data/activity";
 import { useAddChannel } from "@/hooks/customs/use-add-channel";
+import { UserStatus } from "@prisma/client";
 
 export const ActiveNowListItemSkeleton = () => (
   <div className="h-[70px] animate-pulse rounded-md bg-gray-900"></div>
@@ -29,7 +30,7 @@ export default function ActiveNowList() {
     (friend) =>
       friend.activity &&
       friend.activity.type === ActivityTypes.Playing &&
-      friend.status !== StaticUserStatuses.Offline
+      friend.status !== UserStatus.Offline
   );
 
   return filteredList.length ? (

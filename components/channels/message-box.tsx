@@ -1,13 +1,14 @@
 "use client";
 
-import { User } from "@/lib/mock-data/mock";
+import { Users } from "@/lib/mock-data/mock";
 import { useEffect, useRef, useState } from "react";
 import Avatar from "../ui/avatar";
 import { MdCall } from "react-icons/md";
+import { Friends } from "@prisma/client";
 
 interface MessageBoxProps {
-  user: User | null;
-  currentUser: User | null;
+  user: Friends | null;
+  currentUser: Users | null;
   messages: {
     id: number;
     userId?: string;

@@ -1,3 +1,4 @@
+import { UserStatus } from "@prisma/client";
 import { StaticUserStatuses } from "./mock";
 
 export enum FriendsTabEnum {
@@ -12,7 +13,7 @@ export type FriendsTab = {
   key: FriendsTabEnum;
   title: string;
   name?: string;
-  status?: StaticUserStatuses[];
+  status?: UserStatus[];
   empty: {
     imageSrc: string;
     imageAlt: string;
@@ -33,10 +34,10 @@ export const friendsTabsProps: Record<
     key: FriendsTabEnum.Available,
     title: "Online",
     status: [
-      StaticUserStatuses.Online,
-      StaticUserStatuses.DND,
-      StaticUserStatuses.Mobile,
-      StaticUserStatuses.Idle,
+      UserStatus.Online,
+      UserStatus.DND,
+      UserStatus.Mobile,
+      UserStatus.Idle,
     ],
     empty: FRIENDS_EMPTY_PROP,
   },
@@ -44,7 +45,7 @@ export const friendsTabsProps: Record<
     key: FriendsTabEnum.All,
     title: "All your Friends",
     name: "All",
-    status: Object.values(StaticUserStatuses),
+    status: Object.values(UserStatus),
     empty: FRIENDS_EMPTY_PROP,
   },
   [FriendsTabEnum.Pending]: {

@@ -1,9 +1,10 @@
-import { User } from "@/lib/mock-data/mock";
+import { Users } from "@/lib/mock-data/mock";
+import { Friends } from "@prisma/client";
 import { create } from "zustand";
 
 type FriendStore = {
-  friends: User[] | null;
-  setFriends: (friends: User[]) => void;
+  friends: Friends[] | null;
+  setFriends: (friends: Friends[]) => void;
 };
 
 export const useFriendStore = create<FriendStore>((set) => ({

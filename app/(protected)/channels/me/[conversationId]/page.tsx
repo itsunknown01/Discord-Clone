@@ -1,14 +1,11 @@
 import ChannelClient from "@/components/channels/channel-client";
-import UserProfileInfo from "@/components/channels/user-profile-info";
-import { Page, PageHeader } from "@/components/layouts/page";
-import PageContent from "@/components/layouts/page/page-content";
-import Avatar from "@/components/ui/avatar";
+import { Page } from "@/components/layouts/page";
 import {
   MOCK_DELAY,
   delay,
   generateRandomFakeChannels,
 } from "@/lib/mock-data/mock";
-import React from "react";
+import { db } from "@/services/db";
 
 const getChannelById = async (id: string) => {
   const channel = generateRandomFakeChannels(1)[0];
@@ -16,12 +13,16 @@ const getChannelById = async (id: string) => {
   return { channel };
 };
 
-const ConversationPage = async ({ params }: { params: { id: string } }) => {
-  const { channel } = await getChannelById(params.id);
-  
+const ConversationPage = async ({ params }: { params: { conversationId: string } }) => {
+  const { channel } = await getChannelById(params.conversationId);
+
+  const friends = await db.friends.findUnique({
+    where: {id: params.conversationId}
+  })
+
   return (
     <Page>
-      <ChannelClient user={channel} />
+      <ChannelClient user={friends} type="direct" />
     </Page>
   );
 };

@@ -14,8 +14,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { User } from "@/lib/mock-data/mock";
+import { Users } from "@/lib/mock-data/mock";
 import { cn } from "@/lib/utils";
+import { Friends } from "@prisma/client";
 import React, { ReactNode, useState } from "react";
 import { BiSolidPhoneCall } from "react-icons/bi";
 import { BsChatRightFill, BsGithub, BsInboxFill } from "react-icons/bs";
@@ -60,7 +61,7 @@ PageHeaderButton.displayName = "PageHeadeButton";
 
 interface PageHeaderProps {
   children: ReactNode;
-  user?: User;
+  user?: Friends;
   handleAudioCall?: () => void;
   showAudioVideoCall?: boolean;
 }

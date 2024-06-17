@@ -4,12 +4,12 @@ import { cn } from "@/lib/utils";
 import { Edit, Hash, Lock, Mic, Trash, Video } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import ActionTooltip from "../feature/action-tooltip";
-import { Channel, ChannelType, MemberRole } from "@/lib/mock-data/channel";
 import { ListedServer } from "@/lib/mock-data/mock";
+import { Channel, ChannelType, MemberRole, Server } from "@prisma/client";
 
 interface ServerChannelProps {
   channel: Channel;
-  server: ListedServer;
+  server: Server | null;
   role?: MemberRole;
 }
 

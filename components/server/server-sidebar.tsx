@@ -13,13 +13,9 @@ import { ChannelType, MemberRole } from "@/lib/mock-data/channel";
 import { Separator } from "../ui/separator";
 import ServerSection from "./server-section";
 import ServerChannel from "./server-channel";
-
-const getData = async () => {
-  const server = generateRandomFakeServers(1)[0];
-  const channels = generateRandomChannelsFake(8);
-  await delay(MOCK_DELAY);
-  return { server, channels };
-};
+import { currentProfile } from "@/lib/current-profile";
+import { redirect } from "next/navigation";
+import { db } from "@/services/db";
 
 const iconMap = {
   [ChannelType.TEXT]: <Hash className="mr-2 w-4 h-4" />,
@@ -35,15 +31,42 @@ const roleIconMap = {
   [MemberRole.GUEST]: null,
 };
 
-export default async function ServerSidebar() {
-  const { server, channels } = await getData();
+export default async function ServerSidebar({serverId} : {
+  serverId: string;
+}) {
+  const profile = await currentProfile()
 
-  const textChannels = channels.filter(
+  if(!profile) {
+    return redirect('/login')
+  }
+
+  const server = await db.server.findUnique({
+    where: {
+      id: serverId,
+    },
+    include: {
+      channels: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
+      members: {
+        include: {
+          profile: true,
+        },
+        orderBy: {
+          role: "asc",
+        },
+      },
+    },
+  });
+
+  const textChannels = server?.channels.filter(
     (channel) => channel.type === ChannelType.TEXT
   );
 
   return (
-    <div className="h-full w-60 bg-zinc-800 flex flex-col">
+    <div className="h-screen w-60 bg-zinc-800 flex flex-col">
       <Header verticalPadding="px-2" className="bg-zinc-800">
         <ServerHeader server={server} />
       </Header>
@@ -51,7 +74,7 @@ export default async function ServerSidebar() {
       <ScrollArea className="flec-1 px-3">
         <div className="mt-2">server search</div>
         <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2" />
-        {!!textChannels.length && (
+        {!!textChannels?.length && (
           <div className="mb-2">
             <ServerSection
               sectionType="channels"
@@ -59,7 +82,7 @@ export default async function ServerSidebar() {
               label="Text Channels"
             />
             <div className="space-y-[2px]">
-              {textChannels.map((channel) => (
+              {textChannels?.map((channel) => (
                 <ServerChannel
                   key={channel.id}
                   channel={channel}

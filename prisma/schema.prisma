@@ -16,11 +16,18 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String
-  accounts      Account[]
-  sessions      Session[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  accounts Account[]
+  sessions Session[]
+  Profile  Profile?
+
+  friends         Friends[]       @relation("Friends")
+  friendsOf       Friends[]       @relation("FriendsOf")
+  sentRequests    FriendRequets[] @relation("SentRequests")
+  receiveRequests FriendRequets[] @relation("ReceivedRequests")
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
 
 model Account {
@@ -60,4 +67,164 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+model Profile {
+  id       String  @id @default(cuid())
+  userId   String  @unique
+  name     String
+  email    String  @unique
+  username String  @unique
+  imageUrl String?
+
+  members  Member[]
+  servers  Server[]
+  channels Channel[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Server {
+  id         String @id @default(uuid())
+  name       String
+  imageUrl   String @db.Text
+  inviteCode String @unique
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  members  Member[]
+  channels Channel[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+}
+
+enum MemberRole {
+  ADMIN
+  MODERATOR
+  GUEST
+}
+
+model Member {
+  id   String     @id @default(uuid())
+  role MemberRole @default(GUEST)
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  serverId String
+  server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  // messages Message[]
+  // directMessages DirectMessage[]
+
+  // conversationinitiated Conversation[] @relation("MemberOne")
+  // conversationReceived Conversation[] @relation("MemberTwo")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+  @@index([serverId])
+}
+
+enum ChannelType {
+  TEXT
+  AUDIO
+  VIDEO
+}
+
+model Channel {
+  id   String      @id @default(uuid())
+  name String
+  type ChannelType @default(TEXT)
+
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  serverId String
+  server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  // messages Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([profileId])
+  @@index([serverId])
+}
+
+enum ActivityType {
+  Playing
+  Streaming
+  Listening
+  Watching
+}
+
+model Activity {
+  id    String       @id @default(uuid())
+  type  ActivityType
+  name  String
+  since String
+
+  friendId String
+  friend   Friends @relation(fields: [friendId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserStatus {
+  Online
+  Idle
+  DND
+  Offline
+  Mobile
+}
+
+enum FriendType {
+  User
+  Bot
+}
+
+model Friends {
+  id       String     @id @default(uuid())
+  name     String
+  username String?
+  avatar   String?
+  status   UserStatus
+  type     FriendType
+  activity Activity[]
+
+  userId   String
+  friendId String
+
+  user   User @relation("Friends", fields: [userId], references: [id])
+  friend User @relation("FriendsOf", fields: [friendId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum FriendRequetsStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  BLOCKED
+}
+
+model FriendRequets {
+  id         String              @id @default(uuid())
+  senderId   String
+  receiverId String
+  status     FriendRequetsStatus
+
+  sender     User     @relation("SentRequests", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedRequests", fields: [receiverId], references: [id])
 }

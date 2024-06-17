@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import SidebarMenuItem from "@/components/navigation/navigation-menu-item";
@@ -9,19 +9,27 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import NavigationAction from "./naviagation-action";
 import { ListedServer } from "@/lib/mock-data/mock";
 import { Channel } from "@/lib/mock-data/channel";
+import { Server } from "@prisma/client";
+import { useParams } from "next/navigation";
+import LogOutButton from "../feature/logout-button";
 
 interface NavigationSidebarProps {
-  servers: ListedServer[];
-  channels: Channel[]
+  servers: Server[];
 }
 
-const NavigationSidebar = ({ servers,channels }: NavigationSidebarProps) => {
+const NavigationSidebar = ({ servers }: NavigationSidebarProps) => {
   const [active, setActive] = useState<string>("default");
 
-  const initialChannel = channels[0]
+  const params = useParams();
+
+  useEffect(() => {
+    if (params.serverId) {
+      setActive(params.serverId as string);
+    }
+  },[params.serverId])
 
   return (
-    <div className="flex flex-col items-center h-full w-full space-y-4 mt-2 text-primary">
+    <div className="flex flex-col items-center h-screen w-full space-y-4 mt-2 text-primary">
       <SidebarMenuItem
         href={`/channels/me`}
         onClick={() => setActive("default")}
@@ -38,13 +46,13 @@ const NavigationSidebar = ({ servers,channels }: NavigationSidebarProps) => {
       <ScrollArea className="flex-1 w-full">
         {servers.map((server) => (
           <SidebarMenuItem
-            href={`/channels/${server.id}/${initialChannel.id}`}
+            href={`/channels/${server.id}`}
             onClick={() => setActive(server.id)}
             label={server.name}
             notificationCount={1}
             className="mx-auto mb-4"
             image={{
-              url: server.photo,
+              url: server.imageUrl,
               alt: "server name",
             }}
             isActive={active === server.id}
@@ -52,6 +60,7 @@ const NavigationSidebar = ({ servers,channels }: NavigationSidebarProps) => {
           />
         ))}
         <NavigationAction className="mx-auto my-2.5" />
+        <LogOutButton />
       </ScrollArea>
     </div>
   );

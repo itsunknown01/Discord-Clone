@@ -1,7 +1,5 @@
 "use client";
 
-import { ListedServer } from "@/lib/mock-data/mock";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,9 +17,10 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
+import { Server } from "@prisma/client";
 
 interface ServerHeaderProps {
-  server: ListedServer;
+  server: Server | null;
 }
 
 export default function ServerHeader({ server }: ServerHeaderProps) {
@@ -29,7 +28,7 @@ export default function ServerHeader({ server }: ServerHeaderProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild className=" focus:outline-none">
         <button className="w-full text-md font-semibold px-3 flex items-center justify-between h-12 border-neutral-200 dark:border-neutral-800 border-b-2 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition">
-          {server.name}
+          {server?.name}
           <ChevronDown className="h-5 w-5" />
         </button>
       </DropdownMenuTrigger>

@@ -1,6 +1,6 @@
 import React from "react";
 import ConversationMenu from "./conversation-menu";
-import Header from "../ui/header";
+import {Header} from "../ui/header";
 import FindChatButton from "../feature/find-chat-button";
 import ConversationList from "./conversation-list";
 import { auth } from "@/services/next-auth/auth";

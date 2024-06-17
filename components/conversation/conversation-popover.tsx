@@ -1,36 +1,24 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { PopoverContent } from "../ui/popover";
-import InputField from "../ui/input-field";
-import { Input } from "../ui/input";
-import { Separator } from "../ui/separator";
-import {
-  MOCK_DELAY,
-  MOCK_FRIENDS,
-  Users,
-  delay,
-  generateRandomFakeUsers,
-  normalizedCompare,
-} from "@/lib/mock-data/mock";
-import { ListItem } from "../ui/list";
-import Avatar from "../ui/avatar";
-import { useFriendStore } from "@/hooks/customs/use-friends-store";
 import { Friends } from "@prisma/client";
+import { useEffect, useState } from "react";
+
+import { useFriendStore } from "@/hooks/customs/use-friends-store";
+import {
+  normalizedCompare
+} from "@/lib/mock-data/mock";
+import Avatar from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import InputField from "@/components/ui/input-field";
+import { ListItem } from "@/components/ui/list";
+import { PopoverContent } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 
 interface ConversationPopoverProps {
   position: string;
-  setOpen: (open: boolean) => void;
+  setOpen: (isOpen: boolean) => void;
   friend?:Friends[]
 }
-
-// mock data creation
-// const getData = async (): Promise<Friends> => {
-//   const friends: Users[] = generateRandomFakeUsers(MOCK_FRIENDS);
-
-//   await delay(MOCK_DELAY);
-//   return { friends };
-// };
 
 const ConversationPopover = ({
   friend,
@@ -72,6 +60,7 @@ const ConversationPopover = ({
           <Input
             className=" placeholder:text-[14px] flex w-full justify-between rounded-sm bg-black p-1.5 text-left text-xs text-gray-400 hover:bg-black/70"
             placeholder="Enter your friend's username"
+            onChange={(e) => setSearch(e.target.value)}
           />
         </InputField>
 

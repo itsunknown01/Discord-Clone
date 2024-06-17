@@ -9,8 +9,7 @@ import {
 import { CgSmileMouthOpen } from "react-icons/cg";
 
 import { Users } from "@/lib/mock-data/mock";
-import { PageHeader } from "../layouts/page";
-import PageContent from "../layouts/page/page-content";
+import { PageHeader,PageContent } from "../ui/page";
 import Avatar from "../ui/avatar";
 import UserProfileInfo from "./user-profile-info";
 import { useChannelStore } from "@/hooks/customs/use-channel-store";
@@ -127,8 +126,8 @@ export default function ChannelClient({
               </div>
             </div>
           </PageHeader>
-          <PageContent className="flex-col w-full h-screen pb-6 pr-1 min-h-0 mb-20">
-            <div className="max-h-[86vh] !overflow-y-auto flex flex-col justify-end min-h-full">
+          <PageContent className="flex-col w-full h-screen pr-1 min-h-0 justify-end">
+            <div className="!overflow-y-auto flex flex-col min-h-0">
               <UserProfileInfo
                 user={user}
                 handleAddDelete={handleAddDelete}

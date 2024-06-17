@@ -7,7 +7,7 @@ import { MdCall } from "react-icons/md";
 import { Friends } from "@prisma/client";
 
 interface MessageBoxProps {
-  user: Friends | null;
+  user?: Friends | null;
   currentUser: Users | null;
   messages: {
     id: number;
@@ -48,7 +48,7 @@ export function MessageBox({ messages, user, currentUser }: MessageBoxProps) {
             index === 0 || messages[index].userId !== messages[index - 1].userId
               ? "my-4"
               : "my-0 h-fit"
-          } relative flex items-start gap-2`}
+          } relative flex items-start gap-2 mx-4`}
         >
           {message.bot === "endCall" ? (
             <div className="flex items-center space-x-2 py-1 text-xs text-gray-300">
@@ -88,7 +88,7 @@ export function MessageBox({ messages, user, currentUser }: MessageBoxProps) {
                   })}
                 </div>
               )}
-              <div className="flex w-full flex-col overflow-hidden">
+              <div className="flex w-full flex-col overflow-hidden ml-1">
                 {(index === 0 ||
                   messages[index]?.userId !== messages[index - 1]?.userId) && (
                   <div className="flex items-center justify-start">

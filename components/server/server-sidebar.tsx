@@ -1,21 +1,14 @@
-import {
-  MOCK_CHANNELS,
-  MOCK_DELAY,
-  delay,
-  generateRandomChannelsFake,
-  generateRandomFakeServers,
-} from "@/lib/mock-data/mock";
-import Header from "../ui/header";
-import ServerHeader from "./server-header";
-import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
-import { ScrollArea } from "../ui/scroll-area";
-import { ChannelType, MemberRole } from "@/lib/mock-data/channel";
-import { Separator } from "../ui/separator";
-import ServerSection from "./server-section";
-import ServerChannel from "./server-channel";
 import { currentProfile } from "@/lib/current-profile";
-import { redirect } from "next/navigation";
+import { ChannelType, MemberRole } from "@/lib/mock-data/channel";
 import { db } from "@/services/db";
+import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
+import { redirect } from "next/navigation";
+import { Header } from "../ui/header";
+import { ScrollArea } from "../ui/scroll-area";
+import { Separator } from "../ui/separator";
+import ServerChannel from "./server-channel";
+import ServerHeader from "./server-header";
+import ServerSection from "./server-section";
 
 const iconMap = {
   [ChannelType.TEXT]: <Hash className="mr-2 w-4 h-4" />,

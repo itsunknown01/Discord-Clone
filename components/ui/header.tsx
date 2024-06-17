@@ -7,7 +7,7 @@ interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
   verticalPadding?: string;
 }
 
-export default function Header({
+export function Header({
   verticalPadding = "px-4",
   className,
   ...props

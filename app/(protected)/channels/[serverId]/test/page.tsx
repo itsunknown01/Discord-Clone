@@ -1,19 +1,12 @@
+import UserProfileInfo from "@/components/channels/user-profile-info";
 import ChatHeader from "@/components/chat/chat-header";
 import ChatInput from "@/components/chat/chat-input";
 import ChatMessages from "@/components/chat/chat-messages";
 import { Page, PageContent } from "@/components/ui/page";
 import { db } from "@/services/db";
 
-const ConversationPage = async ({
-  params,
-}: {
-  params: { conversationId: string };
-}) => {
-
-  const friend = await db.friends.findUnique({
-    where: { id: params.conversationId },
-  });
-
+export default async function ChatPage() {
+  const friend = await db.friends.findFirst();
   return (
     <Page>
       {!friend?.id ? (
@@ -32,6 +25,4 @@ const ConversationPage = async ({
       )}
     </Page>
   );
-};
-
-export default ConversationPage;
+}

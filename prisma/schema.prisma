@@ -1,33 +1,10 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  username      String    @unique
-  dateOfBirth   String
-  emailVerified DateTime?
-  image         String?
-  password      String
-
-  accounts Account[]
-  sessions Session[]
-  Profile  Profile?
-
-  friends         Friends[]       @relation("Friends")
-  friendsOf       Friends[]       @relation("FriendsOf")
-  sentRequests    FriendRequets[] @relation("SentRequests")
-  receiveRequests FriendRequets[] @relation("ReceivedRequests")
-
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Account {
@@ -42,23 +19,191 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime
+  User              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+}
+
+model Activity {
+  id        String       @id
+  type      ActivityType
+  since     String
+  friendId  String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime
+  Friends   Friends      @relation(fields: [friendId], references: [id], onDelete: Cascade)
+}
+
+model Channel {
+  id        String      @id
+  name      String
+  type      ChannelType @default(TEXT)
+  profileId String
+  serverId  String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime
+  Profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  Server    Server      @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  Message   Message[]
+
+  @@index([profileId])
+  @@index([serverId])
+}
+
+model Conversation {
+  id                                      String          @id
+  UserOneId                               String
+  UserTwoId                               String
+  Profile_Conversation_UserOneIdToProfile Profile         @relation("Conversation_UserOneIdToProfile", fields: [UserOneId], references: [id], onDelete: Cascade)
+  Profile_Conversation_UserTwoIdToProfile Profile         @relation("Conversation_UserTwoIdToProfile", fields: [UserTwoId], references: [id], onDelete: Cascade)
+  DirectMessage                           DirectMessage[]
+
+  @@unique([UserOneId, UserTwoId])
+  @@index([UserTwoId])
+}
+
+model DirectMessage {
+  id             String       @id
+  content        String
+  fileUrl        String?
+  friendId       String
+  conversationId String
+  deleted        Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime
+  Conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  Profile        Profile      @relation(fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@index([friendId, conversationId])
+}
+
+model FriendRequets {
+  id                                        String              @id
+  senderId                                  String
+  receiverId                                String
+  status                                    FriendRequetsStatus
+  Profile_FriendRequets_receiverIdToProfile Profile             @relation("FriendRequets_receiverIdToProfile", fields: [receiverId], references: [id])
+  Profile_FriendRequets_senderIdToProfile   Profile             @relation("FriendRequets_senderIdToProfile", fields: [senderId], references: [id])
+}
+
+model Friends {
+  id                                 String     @id
+  status                             UserStatus
+  type                               FriendType
+  profileId                          String
+  friendId                           String
+  createdAt                          DateTime   @default(now())
+  updatedAt                          DateTime
+  Activity                           Activity[]
+  Profile_Friends_friendIdToProfile  Profile    @relation("Friends_friendIdToProfile", fields: [friendId], references: [id])
+  Profile_Friends_profileIdToProfile Profile    @relation("Friends_profileIdToProfile", fields: [profileId], references: [id])
+}
+
+model Member {
+  id        String     @id
+  role      MemberRole @default(GUEST)
+  profileId String
+  serverId  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime
+  Profile   Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  Server    Server     @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  Message   Message[]
+
+  @@index([profileId])
+  @@index([serverId])
+}
+
+model Message {
+  id        String   @id
+  content   String
+  fileUrl   String?
+  memberId  String
+  channelId String
+  deleted   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  Channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  Member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([channelId, memberId])
+}
+
+model Notification {
+  id        String           @id
+  type      NotificationTyoe
+  content   String
+  read      Boolean          @default(false)
+  userId    String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime
+  Profile   Profile          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Profile {
+  id                                              String          @id
+  userId                                          String          @unique
+  name                                            String
+  email                                           String          @unique
+  username                                        String          @unique
+  imageUrl                                        String?
+  createdAt                                       DateTime        @default(now())
+  updatedAt                                       DateTime
+  status                                          ProfileStatus   @default(Online)
+  Channel                                         Channel[]
+  Conversation_Conversation_UserOneIdToProfile    Conversation[]  @relation("Conversation_UserOneIdToProfile")
+  Conversation_Conversation_UserTwoIdToProfile    Conversation[]  @relation("Conversation_UserTwoIdToProfile")
+  DirectMessage                                   DirectMessage[]
+  FriendRequets_FriendRequets_receiverIdToProfile FriendRequets[] @relation("FriendRequets_receiverIdToProfile")
+  FriendRequets_FriendRequets_senderIdToProfile   FriendRequets[] @relation("FriendRequets_senderIdToProfile")
+  Friends_Friends_friendIdToProfile               Friends[]       @relation("Friends_friendIdToProfile")
+  Friends_Friends_profileIdToProfile              Friends[]       @relation("Friends_profileIdToProfile")
+  Member                                          Member[]
+  Notification                                    Notification[]
+  User                                            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Server                                          Server[]
+}
+
+model Server {
+  id         String    @id
+  name       String
+  imageUrl   String
+  inviteCode String    @unique
+  profileId  String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime
+  Channel    Channel[]
+  Member     Member[]
+  Profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
 }
 
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id            String    @id
+  name          String?
+  email         String    @unique
+  username      String    @unique
+  dateOfBirth   String
+  emailVerified DateTime?
+  image         String?
+  password      String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime
+  Account       Account[]
+  Profile       Profile?
+  Session       Session[]
 }
 
 model VerificationToken {
@@ -69,69 +214,11 @@ model VerificationToken {
   @@id([identifier, token])
 }
 
-model Profile {
-  id       String  @id @default(cuid())
-  userId   String  @unique
-  name     String
-  email    String  @unique
-  username String  @unique
-  imageUrl String?
-
-  members  Member[]
-  servers  Server[]
-  channels Channel[]
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Server {
-  id         String @id @default(uuid())
-  name       String
-  imageUrl   String @db.Text
-  inviteCode String @unique
-
-  profileId String
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  members  Member[]
-  channels Channel[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([profileId])
-}
-
-enum MemberRole {
-  ADMIN
-  MODERATOR
-  GUEST
-}
-
-model Member {
-  id   String     @id @default(uuid())
-  role MemberRole @default(GUEST)
-
-  profileId String
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  serverId String
-  server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
-
-  // messages Message[]
-  // directMessages DirectMessage[]
-
-  // conversationinitiated Conversation[] @relation("MemberOne")
-  // conversationReceived Conversation[] @relation("MemberTwo")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([profileId])
-  @@index([serverId])
+enum ActivityType {
+  Playing
+  Streaming
+  Listening
+  Watching
 }
 
 enum ChannelType {
@@ -140,44 +227,32 @@ enum ChannelType {
   VIDEO
 }
 
-model Channel {
-  id   String      @id @default(uuid())
-  name String
-  type ChannelType @default(TEXT)
-
-  profileId String
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-
-  serverId String
-  server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
-
-  // messages Message[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([profileId])
-  @@index([serverId])
+enum FriendRequetsStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
 
-enum ActivityType {
-  Playing
-  Streaming
-  Listening
-  Watching
+enum FriendType {
+  User
+  Bot
 }
 
-model Activity {
-  id    String       @id @default(uuid())
-  type  ActivityType
-  name  String
-  since String
+enum MemberRole {
+  ADMIN
+  MODERATOR
+  GUEST
+}
 
-  friendId String
-  friend   Friends @relation(fields: [friendId], references: [id], onDelete: Cascade)
+enum NotificationTyoe {
+  MESSAGE
+  FRIEND_REQUEST
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum ProfileStatus {
+  Invisible
+  Online
+  Offline
 }
 
 enum UserStatus {
@@ -186,45 +261,5 @@ enum UserStatus {
   DND
   Offline
   Mobile
-}
-
-enum FriendType {
-  User
-  Bot
-}
-
-model Friends {
-  id       String     @id @default(uuid())
-  name     String
-  username String?
-  avatar   String?
-  status   UserStatus
-  type     FriendType
-  activity Activity[]
-
-  userId   String
-  friendId String
-
-  user   User @relation("Friends", fields: [userId], references: [id])
-  friend User @relation("FriendsOf", fields: [friendId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum FriendRequetsStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-  BLOCKED
-}
-
-model FriendRequets {
-  id         String              @id @default(uuid())
-  senderId   String
-  receiverId String
-  status     FriendRequetsStatus
-
-  sender     User     @relation("SentRequests", fields: [senderId], references: [id])
-  receiver   User     @relation("ReceivedRequests", fields: [receiverId], references: [id])
+  Blocked
 }

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { signIn } from "next-auth/react";
+import axios from "axios"
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { LoginSchema } from "@/schemas";
+import { signIn } from "@/services/next-auth/auth";
+import { DEFAULT_LOGIN_REDIRECT } from "@/lib/routes";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -34,18 +36,15 @@ const LoginForm = () => {
   const LoginSubmit = async (values: z.infer<typeof LoginSchema>) => {
     setIsLoading(true)
     try {
-      const response = await signIn("credentials", {
-        ...values,
-        redirect: false
-      })
+      const response = await axios.post('/api/auth/login', values)
 
-      if(response?.error == null) {
-        router.push('/channels')
+      if(response.status === 200) {
+        router.push(DEFAULT_LOGIN_REDIRECT)
       }
       setIsLoading(false)
       form.reset();
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 

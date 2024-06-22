@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import NextAuthProvider from "@/components/providers/next-auth-provider";
-import { auth } from "@/services/next-auth/auth";
-import ReduxProvider from "@/components/providers/redux-provider";
-import { ModalProvider } from "@/components/providers/modal-provider";
-import { ModalContextProvider } from "@/hooks/customs/use-modal";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,19 +14,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <NextAuthProvider session={session}>
-          <ReduxProvider>
-            <ModalContextProvider>
-              <ModalProvider />
-              {children}
-            </ModalContextProvider>
-          </ReduxProvider>
-        </NextAuthProvider>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

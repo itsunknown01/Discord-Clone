@@ -1,10 +1,12 @@
 "use client";
 
-import { RegisterSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Button } from "../ui/button";
+
+import { useRegisterUserMutation } from "@/hooks/redux/api/auth/authSlice";
+import { RegisterSchema } from "@/schemas";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,12 +14,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 
 const RegisterForm = () => {
-  const router = useRouter();
+  const [registerUser, { isLoading, isSuccess}] =
+    useRegisterUserMutation();
+
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -32,7 +37,11 @@ const RegisterForm = () => {
 
   const handleSubmit = async (values: z.infer<typeof RegisterSchema>) => {
     try {
-      console.log(values);
+      await registerUser(values).unwrap();
+      
+      if(isSuccess) {
+        router.push('/login')
+      }
     } catch (error) {
       console.error(error);
     }
@@ -51,6 +60,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
+                    disabled={isLoading}
                     placeholder="Enter email"
                     className="bg-zinc-900 border-none"
                     type="email"
@@ -69,6 +79,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
+                    disabled={isLoading}
                     placeholder="Enter name"
                     className="bg-zinc-900 border-none"
                     type="text"
@@ -87,6 +98,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
+                    disabled={isLoading}
                     placeholder="Enter username"
                     className="bg-zinc-900 border-none"
                     type="text"
@@ -105,6 +117,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
+                    disabled={isLoading}
                     placeholder="Enter password"
                     className="bg-zinc-900 border-none"
                     type="password"
@@ -124,6 +137,7 @@ const RegisterForm = () => {
                   <Input
                     {...field}
                     type="date"
+                    disabled={isLoading}
                     className="bg-zinc-900 border-none"
                   />
                 </FormControl>
@@ -132,7 +146,7 @@ const RegisterForm = () => {
             )}
           />
         </div>
-        <Button type="submit" className="w-full">
+        <Button type="submit" disabled={isLoading} className="w-full">
           Continue
         </Button>
       </form>

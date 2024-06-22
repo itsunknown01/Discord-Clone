@@ -2,10 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import axios from "axios"
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,13 +15,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { LoginSchema } from "@/schemas";
-import { signIn } from "@/services/next-auth/auth";
+import { useLoginUserMutation } from "@/hooks/redux/api/auth/authSlice";
 import { DEFAULT_LOGIN_REDIRECT } from "@/lib/routes";
+import { LoginSchema } from "@/schemas";
+import { useEffect } from "react";
 
 const LoginForm = () => {
   const router = useRouter();
-  const [isLoading,setIsLoading] = useState<boolean>(false)
+
+  const [loginUser, { isLoading, isSuccess }] = useLoginUserMutation();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -33,15 +33,15 @@ const LoginForm = () => {
     },
   });
 
-  const LoginSubmit = async (values: z.infer<typeof LoginSchema>) => {
-    setIsLoading(true)
-    try {
-      const response = await axios.post('/api/auth/login', values)
+  useEffect(() => {
+    if (isSuccess) {
+      router.push(DEFAULT_LOGIN_REDIRECT);
+    }
+  }, [isSuccess, router]);
 
-      if(response.status === 200) {
-        router.push(DEFAULT_LOGIN_REDIRECT)
-      }
-      setIsLoading(false)
+  const LoginSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    try {
+      await loginUser(values).unwrap();
       form.reset();
     } catch (error) {
       console.log(error);

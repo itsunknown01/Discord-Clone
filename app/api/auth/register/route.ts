@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.user.create({
+    const user =await db.user.create({
       data: {
         name,
         email,
@@ -35,10 +35,33 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({
-      message: "User created successfully",
-      status: 200,
-    });
+    if(!user) {
+      return NextResponse.json({
+        message: "Unable to create User",
+        status: 500,
+      });
+    }
+
+    const account = await db.account.create({
+      data: {
+        userId: user.id,
+        type: "credentials",
+        provider: "credentials",
+        providerAccountId: user.id
+      }
+    })
+
+    if (user && account) {
+      return NextResponse.json({
+        message: "User created successfully",
+        status: 200,
+      });
+    } else {
+      return NextResponse.json({
+        message: "Unable to link account to created user profile",
+        status: 500
+      })
+    }
   } catch (error) {
     console.log(error);
   }

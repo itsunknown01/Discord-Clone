@@ -34,16 +34,19 @@ const LoginForm = () => {
   const LoginSubmit = async (values: z.infer<typeof LoginSchema>) => {
     setIsLoading(true)
     try {
-      await signIn("credentials", {
+      const response = await signIn("credentials", {
         ...values,
         redirect: false
       })
-      router.push('/channels')
+
+      if(response?.error == null) {
+        router.push('/channels')
+      }
       setIsLoading(false)
+      form.reset();
     } catch (error) {
       console.error(error);
     }
-    form.reset();
   };
 
   return (

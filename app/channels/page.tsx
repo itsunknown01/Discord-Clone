@@ -10,4 +10,4 @@ export default async function SetupPage() {
   }
 
   return redirect("/channels/me");
-  }
+}

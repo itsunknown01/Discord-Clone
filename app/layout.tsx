@@ -4,6 +4,8 @@ import "./globals.css";
 import ReduxProvider from "@/components/providers/redux-provider";
 import NextAuthProvider from "@/components/providers/next-auth-provider";
 import { auth } from "@/services/next-auth/auth";
+import { SocketProvider } from "@/hooks/context/use-socket-context";
+import { ModalContextProvider } from "@/hooks/context/use-modal-context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +24,13 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <NextAuthProvider session={session}>
-          <ReduxProvider>{children}</ReduxProvider>
+          <ReduxProvider>
+            <ModalContextProvider>
+              <SocketProvider isAuthenticated={!!session?.user}>
+                {children}
+              </SocketProvider>
+            </ModalContextProvider>
+          </ReduxProvider>
         </NextAuthProvider>
       </body>
     </html>

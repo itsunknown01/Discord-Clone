@@ -26,3 +26,12 @@ export const RegisterSchema = z.object({
         message: "Date of Birth is required"
     }), 
 })
+
+export const serverSchema = z.object({
+    name: z.string().min(1, {
+      message: "Server name is required",
+    }),
+    imageUrl: z.string().min(1, {
+      message: "Server name is required",
+    }),
+  });

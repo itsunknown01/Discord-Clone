@@ -1,44 +1,45 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { io as ClientIo, Socket } from "socket.io-client";
 
 interface SocketType {
   socket: Socket | null;
-  isConnected: boolean;
-}
+ }
 
 const SocketContext = createContext<SocketType | undefined>({
   socket: null,
-  isConnected: false,
 });
 
-export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
+interface SocketProviderProps {
+  children: React.ReactNode;
+  isAuthenticated: boolean;
+}
+
+export const SocketProvider = ({
+  children,
+  isAuthenticated,
+}: SocketProviderProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const socketInstance = new (ClientIo as any)("http://localhost:3000", {
-      path: "/api/socket/io",
-      addTrailingSlash: false,
-    });
+    if (isAuthenticated) {
+      const socketInstance = new (ClientIo as any)("http://localhost:3000", {
+        path: "/api/socket/io",
+        addTrailingSlash: false,
+      });
 
-    socketInstance.on("connect", () => {
-      setIsConnected(true);
-    });
+      setSocket(socketInstance);
 
-    socketInstance.on("disconnect", () => {
-      setIsConnected(false);
-    });
-
-    setSocket(socketInstance);
-    return () => {
-      socketInstance.disconnect();
-    };
-  }, []);
+      return () => {
+        socketInstance.disconnect();
+      };
+    }
+  }, [isAuthenticated]);
 
   return (
-    <SocketContext.Provider value={{ socket, isConnected }}>
+    <SocketContext.Provider value={{ socket }}>
       {children}
     </SocketContext.Provider>
   );

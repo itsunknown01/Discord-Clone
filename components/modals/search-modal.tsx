@@ -41,7 +41,7 @@ export const SearchModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden h-[260px]">
+      <DialogContent className="bg-white text-black p-0 overflow-hidden h-[360px]">
         <DialogHeader className="px-6 pt-8 mt-2">
           <Input
             className="h-14"

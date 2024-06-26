@@ -7,9 +7,10 @@ import { useParams } from "next/navigation";
 import { List } from "@/components/ui/list";
 import ConversationHeader from "@/components/conversation/conversation-header";
 import ConversationListItem from "@/components/conversation/conversation-list-item";
+import { FriendsType } from "@/lib/types";
 
 interface ConversationListProps {
-  friends: Friends[];
+  friends: FriendsType[];
 }
 
 export default function ConversationList({ friends }: ConversationListProps) {
@@ -35,7 +36,7 @@ export default function ConversationList({ friends }: ConversationListProps) {
         {friendsList?.map((friend) => (
           <ConversationListItem
             key={friend.id}
-            active={params?.id === friend.id}
+            active={params?.conversationId === friend.id}
             friend={friend}
             onDelete={() => handleFriendDelete(friend.id)}
           />

@@ -29,7 +29,7 @@ export default function NavigationSidebar({ servers }: { servers: Server[] }) {
           label="Direct Message"
           notificationCount={2}
           className={cn(
-            "mx-auto mb-2",
+            "mx-auto mb-1",
             active === "default" ? "bg-blue-500 text-white" : "text-gray-500"
           )}
           isActive={active === "default"}

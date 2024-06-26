@@ -9,3 +9,9 @@ export interface SocketResponse extends NextApiResponse {
         }
     }
 }
+
+export interface VoiceStatus {
+    mute?: boolean;
+    deaf?: boolean;
+    serverMuted?: boolean;
+}

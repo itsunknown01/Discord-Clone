@@ -2,6 +2,7 @@ import FindChatButton from "@/components/feature/find-chat-button";
 import { Header } from "@/components/ui/header";
 import ConversationMenu from "@/components/conversation/conversation-menu";
 import ConversationList from "./conversation-list";
+import CurrentUserStatus from "../current-user-status/current-user-status";
 
 interface ConversationSidebarProps {
   friends: any[];
@@ -21,6 +22,7 @@ export default function ConversationSidebar({
         <ConversationMenu />
         <ConversationList friends={friends} />
       </div>
+      <CurrentUserStatus profile={profile} />
     </div>
   );
 }

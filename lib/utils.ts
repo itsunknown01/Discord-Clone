@@ -14,3 +14,11 @@ export const normalizedCompare = (a: string, b: string) => {
     ?.toLowerCase()
     .includes(normalizeString(b).toLowerCase());
 };
+
+
+export enum Time {
+  FourHours = "4h",
+  OneHour = "1h",
+  ThirtyMinutes = "30min",
+  DoNotClean = "none",
+}

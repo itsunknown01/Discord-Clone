@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 
 import ChatHeader from "@/components/chat/chat-header";
@@ -11,13 +11,24 @@ import InputField from "@/components/ui/input-field";
 import { PageContent } from "@/components/ui/page";
 import { Separator } from "@/components/ui/separator";
 import { RootState } from "@/hooks/redux/store";
+import { useSocket } from "@/hooks/context/use-socket-context";
+import { Profile } from "@prisma/client";
+
+interface DirectChatMainProps {
+  conversation: any;
+  friends: any[];
+  currentUser: Profile;
+}
 
 export default function DirectChatMain({
   conversation,
-}: {
-  conversation: any;
-}) {
-  const { currentUser } = useSelector((state: RootState) => state.data);
+  friends,
+  currentUser,
+}: DirectChatMainProps) {
+  
+  const isFriend = useMemo(() => {
+    return friends.some((friend) => friend.profile.id === conversation.id);
+  }, [conversation.id, friends]);
 
   const [messages, setMessages] = useState<any[]>([
     {
@@ -106,9 +117,18 @@ export default function DirectChatMain({
     { month: "long" }
   )} ${currentDate.getFullYear()}`;
 
+  const { socket } = useSocket();
+
+  const handleDelete = () => {
+    socket?.emit("sendFriendRequest", {
+      senderId: currentUser.id,
+      receiverId: conversation.id,
+    });
+  };
+
   return (
     <>
-      {!conversation.id ? (
+      {!conversation?.id ? (
         <div className="p-4 text-base text-gray-400">
           Ups probably we cannot find your conversation please back to main page
         </div>
@@ -118,9 +138,9 @@ export default function DirectChatMain({
           <PageContent className="flex flex-col justify-end w-full h-full">
             <div className=" max-h-[86vh] !overflow-y-auto mx-6 ">
               <ChatUserInfo
-                user={conversation.profile}
-                handleAddDelete={() => {}}
-                isFriend={true}
+                user={conversation}
+                handleAddDelete={handleDelete}
+                isFriend={isFriend}
               />
 
               <div className="flex items-center">
@@ -141,7 +161,7 @@ export default function DirectChatMain({
               <Input
                 className=" py-2 pl-12 pr-36 !placeholder-gray-600"
                 type="text"
-                placeholder={`write something to @${conversation.profile.name}`}
+                placeholder={`write something to @${conversation.name}`}
               />
             </InputField>
           </PageContent>

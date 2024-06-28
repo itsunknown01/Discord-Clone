@@ -77,13 +77,14 @@ model Profile {
   email    String        @unique
   username String        @unique
   imageUrl String?
-  status   ProfileStatus @default(Online)
+  status   ProfileStatus @default(Offline)
 
   members              Member[]
   servers              Server[]
   channels             Channel[]
   directMessages       DirectMessage[]
-  Notification         Notification[]
+  FromProfile          Notification[]  @relation("FromProfile")
+  ToProfile            Notification[]  @relation("ToProfile")
   friends              Friends[]       @relation("Friends")
   friendsOf            Friends[]       @relation("FriendsOf")
   sentRequests         FriendRequets[] @relation("SentRequests")
@@ -297,8 +298,11 @@ model Notification {
   content String
   read    Boolean          @default(false)
 
-  userId String
-  user   Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fromId   String
+  fromUser Profile @relation("FromProfile", fields: [fromId], references: [id], onDelete: Cascade)
+
+  toId   String
+  toUser Profile @relation("ToProfile", fields: [toId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

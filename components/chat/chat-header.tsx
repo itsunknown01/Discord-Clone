@@ -1,16 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Avatar from "@/components/ui/avatar";
 import { PageHeader } from "@/components/ui/page";
+import { useSocket } from "@/hooks/context/use-socket-context";
+import { UserStatus } from "@prisma/client";
 
 export default function ChatHeader({ conversation }: { conversation: any }) {
   const [showAudioVideoCall, setShowAudioVideoCall] = useState(false);
+  
+  const { onlineUsers } = useSocket();
+
   const handleAudioVideoCall = () => {
     if (conversation) {
       setShowAudioVideoCall(true);
     }
   };
+
+  const isOnline = useMemo(() => {
+    return onlineUsers.some((user) => user.userId === conversation.id);
+  }, [conversation.id, onlineUsers]);
+
   return (
     <PageHeader
       user={conversation}
@@ -21,11 +31,11 @@ export default function ChatHeader({ conversation }: { conversation: any }) {
         <div className="flex flex-none items-center gap-3 text-sm font-semibold">
           <Avatar
             size="sm"
-            src={conversation?.profile.imageUrl}
+            src={conversation?.imageUrl}
             alt="avatar"
-            status={conversation?.status}
+            status={!isOnline ? UserStatus.Offline : UserStatus.Online}
           />
-          {conversation?.profile.name}
+          {conversation?.name}
         </div>
       </div>
     </PageHeader>

@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useModal } from "@/hooks/context/use-modal-context";
-import { useAddServerMutation } from "@/hooks/redux/api/servers/serverSlice";
+import { useAddServerMutation } from "@/hooks/redux/api/dashboard/servers/serverSlice";
 import { serverSchema } from "@/schemas";
 import FileUpload from "@/components/feature/file-upload";
 

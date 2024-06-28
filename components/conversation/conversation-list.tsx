@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Friends } from "@prisma/client";
 import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import { List } from "@/components/ui/list";
 import ConversationHeader from "@/components/conversation/conversation-header";
 import ConversationListItem from "@/components/conversation/conversation-list-item";
-import { FriendsType } from "@/lib/types";
+import { List } from "@/components/ui/list";
 
 interface ConversationListProps {
-  friends: FriendsType[];
+  friends: any[];
 }
 
 export default function ConversationList({ friends }: ConversationListProps) {

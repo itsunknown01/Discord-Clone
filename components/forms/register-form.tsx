@@ -17,12 +17,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const RegisterForm = () => {
   const [registerUser, { isLoading, isSuccess}] =
     useRegisterUserMutation();
 
   const router = useRouter()
+
+  useEffect(() => {
+    if (isSuccess) {
+      router.push("/login");
+    }
+  }, [isSuccess, router]);
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -38,10 +45,7 @@ const RegisterForm = () => {
   const handleSubmit = async (values: z.infer<typeof RegisterSchema>) => {
     try {
       await registerUser(values).unwrap();
-      
-      if(isSuccess) {
-        router.push('/login')
-      }
+      form.reset();
     } catch (error) {
       console.error(error);
     }

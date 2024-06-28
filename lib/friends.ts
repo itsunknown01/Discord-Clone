@@ -24,7 +24,7 @@ const FRIENDS_EMPTY_PROP = {
     imageSrc: "/NotFoundSearching.svg",
     imageAlt: "No friends found",
     text: "we can't find anyone with that name :(",
-  };
+};
 
 export const friendsTabsProps: Record<
   FriendsTabEnum,

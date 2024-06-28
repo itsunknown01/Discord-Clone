@@ -1,4 +1,4 @@
-import { Activity, Friends } from "@prisma/client";
+import { Activity, Friends, ProfileStatus, UserStatus } from "@prisma/client";
 import { Socket, Server as NetServer } from "net";
 import { NextApiResponse } from "next";
 import { Profile } from "next-auth";
@@ -12,14 +12,19 @@ export interface SocketResponse extends NextApiResponse {
     }
 }
 
-export interface FriendsType extends Friends {
-    profile?: Profile
-    friend?: Profile
-    activity?: Activity
-}
-
 export interface VoiceStatus {
     mute?: boolean;
     deaf?: boolean;
     serverMuted?: boolean;
+}
+
+export interface FriendDataType {
+    id: string;
+    profileId?: string
+    name: string;
+    username: string
+    email: string
+    imageUrl: string | null
+    profile_status?: UserStatus
+    status?: ProfileStatus
 }

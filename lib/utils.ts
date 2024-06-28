@@ -22,3 +22,7 @@ export enum Time {
   ThirtyMinutes = "30min",
   DoNotClean = "none",
 }
+
+export function calculateHoursBetweenDates(date1: any, date2: Date) {
+  return Math.floor(Math.abs(date1?.getTime() - date2.getTime()) / 3600000);
+}

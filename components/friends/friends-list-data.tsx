@@ -1,39 +1,66 @@
 "use client";
 
-import { cn, normalizedCompare } from "@/lib/utils";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Profile } from "@prisma/client";
 import { BsSearch, BsXLg } from "react-icons/bs";
-import InputField from "../ui/input-field";
-import { Input } from "../ui/input";
-import { ScrollArea } from "../ui/scroll-area";
-import { List } from "../ui/list";
-import { FriendsTab } from "@/lib/friends";
-import FriendListItem from "./friend-list-item";
-import { FriendsEmptyBox } from "./friends-empty-box";
+
+import FriendListItem from "@/components/friends/friend-list-item";
+import { FriendsEmptyBox } from "@/components/friends/friends-empty-box";
+import { Input } from "@/components/ui/input";
+import InputField from "@/components/ui/input-field";
+import { List } from "@/components/ui/list";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { RootState } from "@/hooks/redux/store";
+import { FriendsTab, FriendsTabEnum } from "@/lib/friends";
+import { cn, normalizedCompare } from "@/lib/utils";
+import { FriendDataType } from "@/lib/types";
 
 export default function FriendsListData({
   tab,
-  data
+  data,
 }: {
-  tab: any;
-  data: any;
+  tab: FriendsTab;
+  data: FriendDataType[] | Profile[];
 }) {
   const [search, setSearch] = useState("");
+  const [filteredList, setFilteredList] = useState<
+    FriendDataType[] | Profile[]
+  >([]);
+
+  const { currentTab } = useSelector((state: RootState) => state.data);
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
-  const filteredList = data?.filter((user: any) => {
-    const isMatchingName =
-      !search || normalizedCompare(user.profile.name, search);
-    return (
-      (tab?.status ? tab?.status.includes(user.status) : true) && isMatchingName
-    );
-  });
+  useEffect(() => {
+    if (currentTab !== FriendsTabEnum.AddFriend) {
+      setFilteredList(
+        data?.filter((user: any) => {
+          const isMatchingName =
+            !search || normalizedCompare(user.profile.name, search);
+
+          return (
+            (tab?.status ? tab?.status.includes(user.status) : true) &&
+            isMatchingName
+          );
+        })
+      );
+    }
+
+    if (search !== "") {
+      setFilteredList(
+        data.filter((user: any) =>
+          user.name.toLowerCase().includes(search.toLowerCase())
+        )
+      );
+    }
+  }, [data, search, tab.status, currentTab]);
+
   return (
     <>
-      {!!data?.length && (
+      {!!data.length && (
         <div className="px-2 pb-5">
           <InputField
             endIcon={
@@ -60,6 +87,7 @@ export default function FriendsListData({
               placeholder="Search"
               value={search}
               onChange={handleSearch}
+              className="text-black"
             />
           </InputField>
           <div className="mt-6 text-xs font-semibold uppercase text-gray-400">
@@ -73,7 +101,7 @@ export default function FriendsListData({
             {filteredList.map((friend: any) => (
               <FriendListItem
                 key={friend.id}
-                tab={tab as FriendsTab}
+                tab={tab}
                 friend={friend}
               />
             ))}

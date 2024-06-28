@@ -14,38 +14,48 @@ import RoundedButton from "@/components/ui/rounded-button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/hooks/redux/store";
 import { setConversation } from "@/hooks/redux/slice-stores/storeSlice";
+import { useAcceptRequestMutation, useDeleteRequestMutation } from "@/hooks/redux/api/dashboard/friend-request/requestSlice";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { FriendDataType } from "@/lib/types";
 
 interface FriendListItemProps {
   tab: FriendsTab;
-  friend: any;
+  friend: FriendDataType;
 }
 
 export default function FriendListItem({ friend, tab }: FriendListItemProps) {
-  const [friends, setFriends] = useState<any[]>([]);
-  const [friendRequest, setFriendRequests] = useState<any[]>([]);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-  const dispatch = useDispatch()
-
+  const [acceptRequest, { isSuccess }] = useAcceptRequestMutation();
+  const [deleteRequest] = useDeleteRequestMutation();
   const { conversation } = useSelector((state: RootState) => state.data);
 
-  const handleAcceptFriends = () => {
-    if (friends !== null && friendRequest !== null) {
-      setFriendRequests(
-        friendRequest?.filter((item) => item.id !== friend?.id)
-      );
-      setFriends([...friends, friend]);
+  const handleAcceptFriends = async () => {
+    try {
+      if (friend.id) {
+        await acceptRequest(friend.id);
+        if (isSuccess) {
+          router.refresh();
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const handleDeclineFriends = () => {
-    if (friendRequest !== null) {
-      setFriendRequests(friendRequest.filter((item) => item.id !== friend?.id));
-    }
+  const handleDeclineFriends = async () => {
+   try {
+     await deleteRequest(friend.id)
+   } catch(error) {
+    console.log(error);
+   }
   };
-  const handleAddChannel = () => {
+  const handleAddConversation = () => {
     if (conversation !== null) {
       const isFriendAlreadyAdded = conversation?.some(
-        (channel) => channel.id === friend?.id
+        (user) => user.id === friend?.id
       );
       if (!isFriendAlreadyAdded) {
         dispatch(setConversation([friend, ...conversation]));
@@ -56,37 +66,27 @@ export default function FriendListItem({ friend, tab }: FriendListItemProps) {
   return (
     <ListItem
       href={
-        tab.key === FriendsTabEnum.Pending
-          ? ""
-          : `/channels/me/${friend.profile.id}`
+        tab.key === FriendsTabEnum.Pending ? "" : `/channels/me/${friend?.profileId}`
       }
       className={`group justify-between border-t-[1px] border-gray-800 py-2.5 pr-3 `}
       noVerticalPadding
     >
       <div className="flex items-center gap-3">
         <Avatar
-          src={
-            tab.key === FriendsTabEnum.Pending
-              ? friend.sender.imageUrl
-              : friend.profile.imageUrl
-          }
+          src={friend.imageUrl}
           alt={friend.name}
           className="flex-none"
           status={
-            tab.key === FriendsTabEnum.Pending ? undefined : friend.status
+            tab.key === FriendsTabEnum.Pending
+              ? undefined
+              : friend.profile_status
           }
         />
         <div className="flex-1 leading-4">
           <div className="flex items-center gap-1.5 text-sm text-gray-200">
-            <span className="font-semibold">
-              {tab.key === FriendsTabEnum.Pending
-                ? friend.sender?.name
-                : friend?.profile.name}
-            </span>
+            <span className="font-semibold">{friend?.name}</span>
             <span className="hidden text-xs text-gray-400 group-hover:block">
-              {tab.key === FriendsTabEnum.Pending
-                ? friend.sender?.username
-                : friend?.profile.username}
+              {friend.username}
             </span>
           </div>
           <div className="text-[13px] text-gray-300">
@@ -116,7 +116,10 @@ export default function FriendListItem({ friend, tab }: FriendListItemProps) {
           </>
         ) : (
           <>
-            <RoundedButton onClick={handleAddChannel} tooltipContent="Message">
+            <RoundedButton
+              onClick={handleAddConversation}
+              tooltipContent="Message"
+            >
               <BsChatLeftFill />
             </RoundedButton>
             <RoundedButton tooltipContent="More">

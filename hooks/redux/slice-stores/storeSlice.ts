@@ -1,12 +1,12 @@
 import { FriendsTabEnum } from "@/lib/friends";
-import { FriendsType } from "@/lib/types";
+import { FriendDataType } from "@/lib/types";
 import { Profile } from "@prisma/client";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface StoreState {
-  friends: FriendsType[];
+  friends: FriendDataType[];
   currentTab: FriendsTabEnum;
-  conversation: FriendsType[];
+  conversation: FriendDataType[];
   currentUser: Profile;
 }
 
@@ -31,13 +31,13 @@ const StoreSlice = createSlice({
   name: "data",
   initialState,
   reducers: {
-    setFriends(state, action: PayloadAction<FriendsType[]>) {
+    setFriends(state, action: PayloadAction<FriendDataType[]>) {
       state.friends = action.payload;
     },
     setCurrentTab(state, action: PayloadAction<FriendsTabEnum>) {
       state.currentTab = action.payload;
     },
-    setConversation(state, action: PayloadAction<FriendsType[]>) {
+    setConversation(state, action: PayloadAction<FriendDataType[]>) {
       state.conversation = action.payload;
     },
     setCurrentUser(state, action: PayloadAction<Profile>) {
@@ -47,6 +47,6 @@ const StoreSlice = createSlice({
 });
 
 export const { setFriends, setConversation, setCurrentTab, setCurrentUser } =
-StoreSlice.actions;
+  StoreSlice.actions;
 
-export default StoreSlice.reducer
+export default StoreSlice.reducer;

@@ -1,1 +1,2 @@
-export { GET,POST } from "@/services/next-auth/auth";
+import { handlers } from "@/services/next-auth/auth";
+export const { GET, POST } = handlers;

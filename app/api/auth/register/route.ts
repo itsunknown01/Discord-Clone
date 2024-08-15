@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 import { RegisterSchema } from "@/schemas";
 import { getUserByEmail } from "@/services/auth/user";
 import { db } from "@/services/db";
+import { generateVerificationToken } from "@/services/auth/tokens";
+import { sendVerificationEmail } from "@/email/mail";
 
 export async function POST(req: Request) {
   try {
@@ -25,7 +27,7 @@ export async function POST(req: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user =await db.user.create({
+    const user = await db.user.create({
       data: {
         name,
         email,
@@ -35,7 +37,7 @@ export async function POST(req: Request) {
       },
     });
 
-    if(!user) {
+    if (!user) {
       return NextResponse.json({
         message: "Unable to create User",
         status: 500,
@@ -47,9 +49,16 @@ export async function POST(req: Request) {
         userId: user.id,
         type: "credentials",
         provider: "credentials",
-        providerAccountId: user.id
-      }
-    })
+        providerAccountId: user.id,
+      },
+    });
+
+    const verificationToken = await generateVerificationToken(email);
+    await sendVerificationEmail({
+      email: verificationToken.email,
+      verificationToken: verificationToken.token,
+      userName: user.username,
+    });
 
     if (user && account) {
       return NextResponse.json({
@@ -59,8 +68,8 @@ export async function POST(req: Request) {
     } else {
       return NextResponse.json({
         message: "Unable to link account to created user profile",
-        status: 500
-      })
+        status: 500,
+      });
     }
   } catch (error) {
     console.log(error);

@@ -1,5 +1,7 @@
+import { sendVerificationEmail } from "@/email/mail";
 import { DEFAULT_LOGIN_REDIRECT } from "@/lib/routes";
 import { LoginSchema } from "@/schemas";
+import { generatePasswordToken, generateVerificationToken } from "@/services/auth/tokens";
 import { getUserByEmail } from "@/services/auth/user";
 import { signIn } from "@/services/next-auth/auth";
 import { NextResponse } from "next/server";
@@ -18,6 +20,23 @@ export async function POST(req: Request, res: Response) {
       return NextResponse.json({ message: "User already exists" });
     }
 
+    if(!existingUser.emailVerified) {
+      const verificationToken = await generateVerificationToken(existingUser.email)
+      const passwordToken = await generatePasswordToken(verificationToken.email)
+
+      await sendVerificationEmail({
+        email: verificationToken.email,
+        verificationToken: verificationToken.token,
+        passwordToken: passwordToken.token,
+        userName: existingUser.username,
+      });
+
+      return NextResponse.json({
+        message: "Confirmation email sent",
+        status: 200,
+      });
+    }
+
     try {
       await signIn("credentials", {
         email,
@@ -29,7 +48,7 @@ export async function POST(req: Request, res: Response) {
     }
 
     return NextResponse.json({
-      message: "User created successfully",
+      message: "User login successfully",
       status: 200,
     });
   }

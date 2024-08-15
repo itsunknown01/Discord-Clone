@@ -6,6 +6,7 @@ import NextAuthProvider from "@/components/providers/next-auth-provider";
 import { auth } from "@/services/next-auth/auth";
 import { SocketProvider } from "@/hooks/context/use-socket-context";
 import { ModalContextProvider } from "@/hooks/context/use-modal-context";
+import QueryProvider from "@/components/providers/query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <NextAuthProvider session={session}>
+          <QueryProvider>
           <ReduxProvider>
             <ModalContextProvider>
               <SocketProvider isAuthenticated={!!session?.user}>
@@ -31,6 +33,7 @@ export default async function RootLayout({
               </SocketProvider>
             </ModalContextProvider>
           </ReduxProvider>
+          </QueryProvider>
         </NextAuthProvider>
       </body>
     </html>

@@ -4,8 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { useRegisterUserMutation } from "@/hooks/redux/api/auth/authSlice";
-import { RegisterSchema } from "@/schemas";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,20 +14,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { postMethodhelper } from "@/helpers";
+import { RegisterSchema } from "@/schemas";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 const RegisterForm = () => {
-  const [registerUser, { isLoading, isSuccess}] =
-    useRegisterUserMutation();
-
-  const router = useRouter()
-
-  useEffect(() => {
-    if (isSuccess) {
+  const router = useRouter();
+  const { mutate: registerUser, isPending } = useMutation({
+    mutationKey: ["register"],
+    mutationFn: (values: z.infer<typeof RegisterSchema>) =>
+      postMethodhelper("/api/auth/regoster", values),
+    onSuccess: () => {
       router.push("/login");
-    }
-  }, [isSuccess, router]);
+    },
+  });
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -43,12 +42,8 @@ const RegisterForm = () => {
   });
 
   const handleSubmit = async (values: z.infer<typeof RegisterSchema>) => {
-    try {
-      await registerUser(values).unwrap();
-      form.reset();
-    } catch (error) {
-      console.error(error);
-    }
+    registerUser(values);
+    form.reset();
   };
 
   return (
@@ -64,7 +59,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
-                    disabled={isLoading}
+                    disabled={isPending}
                     placeholder="Enter email"
                     className="bg-zinc-900 border-none"
                     type="email"
@@ -83,7 +78,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
-                    disabled={isLoading}
+                    disabled={isPending}
                     placeholder="Enter name"
                     className="bg-zinc-900 border-none"
                     type="text"
@@ -102,7 +97,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
-                    disabled={isLoading}
+                    disabled={isPending}
                     placeholder="Enter username"
                     className="bg-zinc-900 border-none"
                     type="text"
@@ -121,7 +116,7 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input
                     {...field}
-                    disabled={isLoading}
+                    disabled={isPending}
                     placeholder="Enter password"
                     className="bg-zinc-900 border-none"
                     type="password"
@@ -141,7 +136,7 @@ const RegisterForm = () => {
                   <Input
                     {...field}
                     type="date"
-                    disabled={isLoading}
+                    disabled={isPending}
                     className="bg-zinc-900 border-none"
                   />
                 </FormControl>
@@ -150,7 +145,7 @@ const RegisterForm = () => {
             )}
           />
         </div>
-        <Button type="submit" disabled={isLoading} className="w-full">
+        <Button type="submit" disabled={isPending} className="w-full">
           Continue
         </Button>
       </form>

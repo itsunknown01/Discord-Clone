@@ -4,7 +4,9 @@
  * @type {string[]}
  */
 export const publicRoutes = [
-    "/"
+    "/",
+    "/authorise",
+    "/test"
 ]
 
 /**
@@ -14,7 +16,8 @@ export const publicRoutes = [
  */
 export const authRoutes = [
     "/login",
-    "/register"
+    "/register",
+    "/password"
 ]
 
 /**

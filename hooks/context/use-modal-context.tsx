@@ -4,10 +4,11 @@ import { ReactNode, createContext, useContext, useState } from "react";
 
 import { ModalProvider } from "@/components/providers/modal-provider";
 
-export type ModalType = "createServer" | "searchModal";
+export type ModalType = "createServer" | "searchModal" | "openMessage";
 
 interface ModalData {
   friends?: any[];
+  email?:string
 }
 
 interface ModalContextType {

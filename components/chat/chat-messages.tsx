@@ -13,10 +13,6 @@ interface ChatMessagesProps {
 export default function ChatMessages({ messages,user,currentUser }: ChatMessagesProps) {
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const [showDetailMessage, setShowDetailMessage] = useState<{
-    [key: number]: boolean;
-  }>({});
-
   return (
     <>
       {messages.map((message, index) => (
@@ -60,15 +56,7 @@ export default function ChatMessages({ messages,user,currentUser }: ChatMessages
                 alt="Avatar"
                 status={user?.status}
               />
-              {showDetailMessage[message.id] && (
-                <div className="absolute top-1.5 z-0 text-xs text-gray-400">
-                  {new Date(message.timestamp).toLocaleTimeString([], {
-                    hour: "numeric",
-                    minute: "numeric",
-                  })}
-                </div>
-              )}
-              <div className="flex w-full flex-col overflow-hidden">
+              <div className="flex w-full flex-col overflow-hidden ml-2">
                 {(index === 0 ||
                   messages[index]?.userId !== messages[index - 1]?.userId) && (
                   <div className="flex items-center justify-start">
@@ -78,25 +66,14 @@ export default function ChatMessages({ messages,user,currentUser }: ChatMessages
                         : currentUser?.name}
                     </div>
                     <div className=" ml-2 text-xs text-gray-400">
-                      {new Date(message.timestamp).toLocaleTimeString()}
+                      {new Date(message.timestamp).toLocaleTimeString([],{
+                        hour: "numeric",
+                        minute: "numeric",
+                      })}
                     </div>
                   </div>
                 )}
-                <div
-                  onMouseEnter={() => {
-                    setShowDetailMessage((prev) => ({
-                      ...prev,
-                      [message.id]: true,
-                    }));
-                  }}
-                  onMouseLeave={() => {
-                    setShowDetailMessage((prev) => ({
-                      ...prev,
-                      [message.id]: false,
-                    }));
-                  }}
-                  className="break-words pr-12"
-                >
+                <div>
                   {message.text}
                 </div>
               </div>

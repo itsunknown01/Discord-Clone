@@ -12,8 +12,8 @@ export default async function ConversationIdPage({
   params: { conversationId: string };
 }) {
   const profile = await currentProfile();
-  if(!profile) {
-    return redirect('/login')
+  if (!profile) {
+    return redirect("/login");
   }
   const friends = await db.friends.findMany({
     where: {
@@ -27,9 +27,9 @@ export default async function ConversationIdPage({
 
   const user = await db.profile.findFirst({
     where: {
-      id: params.conversationId
-    }
-  })
+      id: params.conversationId,
+    },
+  });
   // const conversation = await db.conversation.findUnique({
   //   where: {
   //     UserOneId: profile?.id,
@@ -38,7 +38,11 @@ export default async function ConversationIdPage({
   // })
   return (
     <Page>
-      <DirectChatMain conversation={user} friends={friends} currentUser={profile} />
+      <DirectChatMain
+        conversation={user}
+        friends={friends}
+        currentUser={profile}
+      />
     </Page>
   );
 }

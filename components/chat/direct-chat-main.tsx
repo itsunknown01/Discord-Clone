@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { RootState } from "@/hooks/redux/store";
 import { useSocket } from "@/hooks/context/use-socket-context";
 import { Profile } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 interface DirectChatMainProps {
   conversation: any;
@@ -25,6 +26,10 @@ export default function DirectChatMain({
   friends,
   currentUser,
 }: DirectChatMainProps) {
+  const router = useRouter()
+  if(!conversation?.id) {
+    router.push("/channels/me")
+  }
   
   const isFriend = useMemo(() => {
     return friends.some((friend) => friend.profile.id === conversation.id);
@@ -134,8 +139,8 @@ export default function DirectChatMain({
         </div>
       ) : (
         <>
-          <ChatHeader conversation={conversation} />
-          <PageContent className="flex flex-col justify-end w-full h-full">
+          <ChatHeader conversation={conversation} type="conversation" />
+          <PageContent className="flex flex-col justify-end w-full h-full !text-white">
             <div className=" max-h-[86vh] !overflow-y-auto mx-6 ">
               <ChatUserInfo
                 user={conversation}

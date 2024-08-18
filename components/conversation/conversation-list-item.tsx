@@ -21,8 +21,8 @@ export default function ConversationListItem({
   const { onlineUsers } = useSocket();
 
   const isOnline = useMemo(() => {
-    return onlineUsers.some((user) => user.userId === friend.friendId);
-  }, [onlineUsers, friend.friendId]);
+    return onlineUsers.some((user) => user.userId === friend.id);
+  }, [onlineUsers, friend.id]);
 
   return (
     <ListItem

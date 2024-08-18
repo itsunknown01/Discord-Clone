@@ -35,7 +35,7 @@ export const SocketProvider = ({ children, profile }: SocketProviderProps) => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      const socketInstance = io("http://localhost:4000");
+      const socketInstance = io();
 
       socketInstance.emit("login", profile.id);
 

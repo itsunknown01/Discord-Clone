@@ -15,15 +15,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { getMethodhelper, postMethodhelper } from "@/helpers";
+import { postMethodhelper } from "@/helpers";
+import { useModalStore } from "@/hooks/store/use-modal-store";
 import { DEFAULT_LOGIN_REDIRECT } from "@/lib/routes";
 import { LoginSchema } from "@/schemas";
 import { useMutation } from "@tanstack/react-query";
-import { useModal } from "@/hooks/context/use-modal-context";
 
 const LoginForm = () => {
   const router = useRouter();
-  const { onOpen } = useModal();
+  const { onOpen } = useModalStore();
 
   const { mutate: LoginUser, isPending } = useMutation({
     mutationKey: ["loginUser"],

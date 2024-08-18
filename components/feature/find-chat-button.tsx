@@ -1,11 +1,10 @@
 "use client";
 
-import React from "react";
 
-import { useModal } from "@/hooks/context/use-modal-context";
+import { useModalStore } from "@/hooks/store/use-modal-store";
 
 const FindChatButton = ({ friends }: { friends: any[] }) => {
-  const { onOpen } = useModal();
+  const { onOpen } = useModalStore();
 
   return (
     <button

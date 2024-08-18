@@ -1,7 +1,8 @@
 "use client";
 
-import { useModal } from "@/hooks/context/use-modal-context";
-import React, { useCallback, useEffect } from "react";
+import { useModalStore } from "@/hooks/store/use-modal-store";
+import { useCallback, useEffect } from "react";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,21 +11,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Button } from "../ui/button";
 
 const MessageModal = () => {
-  const { isOpen, type, data, onClose } = useModal();
+  const { isOpen, type, data, onClose } = useModalStore();
   const isModalOpen = isOpen && type === "openMessage";
 
-  const handleClose = useCallback(() => onClose(), [onClose]);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClose);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClose);
-    };
-  }, [handleClose]);
+  const handleClose = () => onClose();
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>

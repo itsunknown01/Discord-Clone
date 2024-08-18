@@ -6,7 +6,7 @@ export async function InitialProfile() {
   const session = await auth();
   const user = session?.user;
 
-  if (!user) {
+  if (!user?.id) {
     return redirect(`/login`);
   }
 

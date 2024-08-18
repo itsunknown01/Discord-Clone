@@ -1,66 +1,76 @@
 "use client";
 
+import { postMethodhelper } from "@/helpers";
+import { useMutation } from "@tanstack/react-query";
 import { Upload, X } from "lucide-react";
 import Image from "next/image";
-import { ChangeEvent, useRef, useState } from "react";
-
-import { Input } from "@/components/ui/input";
-import { Progress } from "../ui/progress";
+import { ChangeEvent, useRef } from "react";
 
 interface FileUploadProps {
+  type: "image" | "pdf";
   value: string;
   onChange: (value: string) => void;
 }
 
-export default function FileUpload({ value, onChange }: FileUploadProps) {
-  const [selectImage,setSelectImage] = useState<File| null>(null)
-  const [progress,setProgress] = useState(0)
-  const inputRef = useRef<HTMLInputElement>(null);
+export default function FileUpload({ type, value, onChange }: FileUploadProps) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const onChoseFile = () => {
-    if (inputRef.current) {
-      inputRef.current?.click();
+  const { mutate: fileUpload } = useMutation({
+    mutationKey: ["upload-image"],
+    mutationFn: (formData: FormData) =>
+      postMethodhelper("/api/uploads", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }),
+    onSuccess: ({ url }) => onChange(url),
+    onError: (error) => console.error("Error uploading file:", error),
+  });
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      fileUpload(formData);
     }
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-       setSelectImage(e.target.files[0]);
-  };
+  if (type === "image" && value) {
+    return (
+      <div className="relative h-20 w-20">
+        <Image
+          fill
+          src={value}
+          alt="Upload"
+          className="object-contain rounded-[50px]"
+        />
+        <button
+          onClick={() => onChange("")}
+          className="bg-rose-500 text-white p-1 rounded-full absolute top-0 right-0 shadow-sm"
+          type="button"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+    );
   }
 
   return (
     <>
-      <Input
-        value={value}
+      <button
+        onClick={() => inputRef.current?.click()}
+        className="w-[250px] h-[150px] text-base text-[#5d4dcc] border-dashed border-[1.5px] border-[#5d4dcc] rounded-[22px] font-medium flex flex-col items-center justify-center gap-3"
+      >
+        <Upload className="h-8 w-8" />
+        Upload File
+      </button>
+      <input
         ref={inputRef}
-        onChange={handleFileChange}
+        onChange={handleChange}
         className="hidden"
         type="file"
       />
-      {!value && (
-        <button
-          onClick={onChoseFile}
-          className="w-[250px] h-[150px] text-base text-[#5d4dcc] border-dashed border-[1.5px] border-[#5d4dcc] rounded-[22px] font-medium flex flex-col items-center justify-center gap-3"
-        >
-          <Upload className="h-8 w-8" />
-          <span></span>Upload File
-        </button>
-      )}
-      {value && (
-        <div className="relative h-20 w-20">
-          <Image fill src={value} alt="Upload" className="full" />
-
-          <Progress value={progress} />
-          <button
-            onClick={() => onChange("")}
-            className="bg-rose-500 text-white p-1 rounded-full absolute top-0 right-0 shadow-sm"
-            type="button"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-      )}
     </>
   );
 }

@@ -92,7 +92,7 @@ const PageHeader = ({
   return (
     <Header
       className={`flex-none justify-between ${
-        showAudioVideoCall ? "bg-[#000000]" : ""
+        showAudioVideoCall ? "text-[#000000]" : ""
       } transition-colors duration-200 ease-in-out `}
     >
       {children}

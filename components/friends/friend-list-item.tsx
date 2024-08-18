@@ -14,7 +14,10 @@ import RoundedButton from "@/components/ui/rounded-button";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/hooks/redux/store";
 import { setConversation } from "@/hooks/redux/slice-stores/storeSlice";
-import { useAcceptRequestMutation, useDeleteRequestMutation } from "@/hooks/redux/api/dashboard/friend-request/requestSlice";
+import {
+  useAcceptRequestMutation,
+  useDeleteRequestMutation,
+} from "@/hooks/redux/api/dashboard/friend-request/requestSlice";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { FriendDataType } from "@/lib/types";
@@ -46,11 +49,11 @@ export default function FriendListItem({ friend, tab }: FriendListItemProps) {
   };
 
   const handleDeclineFriends = async () => {
-   try {
-     await deleteRequest(friend.id)
-   } catch(error) {
-    console.log(error);
-   }
+    try {
+      await deleteRequest(friend.id);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleAddConversation = () => {
     if (conversation !== null) {
@@ -66,7 +69,9 @@ export default function FriendListItem({ friend, tab }: FriendListItemProps) {
   return (
     <ListItem
       href={
-        tab.key === FriendsTabEnum.Pending ? "" : `/channels/me/${friend?.profileId}`
+        tab.key === FriendsTabEnum.Pending
+          ? ""
+          : `/channels/me/${friend?.profileId ? friend.profileId : friend.id}`
       }
       className={`group justify-between border-t-[1px] border-gray-800 py-2.5 pr-3 `}
       noVerticalPadding

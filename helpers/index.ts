@@ -1,18 +1,32 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 
-export const getMethodhelper = async (apiUrl:string) => {
-  const response = await axios.get(apiUrl);
+export const getMethodhelper = async (
+  apiUrl: string,
+  config?: AxiosRequestConfig<any> | undefined
+) => {
+  const response = await axios.get(apiUrl, config);
   return response.data;
 };
-export const postMethodhelper = async (apiUrl: string,data: any) => {
-    const response = await axios.post(apiUrl,data)
-    return response.data
-}
-export const putMethodhelper = async (apiUrl: string,data:any) => {
-    const response = await axios.put(apiUrl,data)
-    return response.data
-}
-export const deleteMethodhelper = async (apiUrl: string) => {
-    const response = await axios.delete(apiUrl)
-    return response.data
-}
+export const postMethodhelper = async (
+  apiUrl: string,
+  data: any,
+  config?: AxiosRequestConfig<any> | undefined
+) => {
+  const response = await axios.post(apiUrl, data, config);
+  return response.data;
+};
+export const putMethodhelper = async (
+  apiUrl: string,
+  data: any,
+  config?: AxiosRequestConfig<any> | undefined
+) => {
+  const response = await axios.put(apiUrl, data, config);
+  return response.data;
+};
+export const deleteMethodhelper = async (
+  apiUrl: string,
+  config?: AxiosRequestConfig<any> | undefined
+) => {
+  const response = await axios.delete(apiUrl, config);
+  return response.data;
+};

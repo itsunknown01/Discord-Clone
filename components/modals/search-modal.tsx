@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { BsFillChatLeftTextFill } from "react-icons/bs";
 
-import { useModal } from "@/hooks/context/use-modal-context";
+import Avatar from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -11,12 +11,12 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { ListItem } from "@/components/ui/list";
-import Avatar from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useModalStore } from "@/hooks/store/use-modal-store";
 
 export const SearchModal = () => {
-  const { isOpen, onClose, type, data } = useModal();
+  const { isOpen, onClose, type, data } = useModalStore();
   const { friends } = data;
 
   const [search, setSearch] = useState("");

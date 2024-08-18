@@ -24,7 +24,7 @@ const RegisterForm = () => {
   const { mutate: registerUser, isPending } = useMutation({
     mutationKey: ["register"],
     mutationFn: (values: z.infer<typeof RegisterSchema>) =>
-      postMethodhelper("/api/auth/regoster", values),
+      postMethodhelper("/api/auth/register", values),
     onSuccess: () => {
       router.push("/login");
     },

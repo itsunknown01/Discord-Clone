@@ -8,13 +8,13 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import languages from "@/lib/constant";
+import languages from "@/constants/landing-page";
 import { Language } from "@/types";
 
 const LanguageMenu = () => {
   const [selected, setSelected] = useState<Language | null>(null);
 
-  const handleSelected = (lang: any) => {
+  const handleSelected = (lang: Language) => {
     setSelected(lang);
   };
   return (

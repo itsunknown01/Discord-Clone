@@ -1,6 +1,6 @@
 import About from "@/components/landing-page/about";
 import HeroSection from "@/components/landing-page/hero-section";
-import { aboutData } from "@/lib/constant";
+import { aboutData } from "@/constants/landing-page";
 import Image from "next/image";
 import Link from "next/link";
 

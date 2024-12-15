@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { navLinks } from "@/lib/constant";
+import { navLinks } from "@/constants/landing-page";
 
 const Header = () => {
   const router = useRouter();

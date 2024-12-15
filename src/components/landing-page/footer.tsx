@@ -1,6 +1,6 @@
 "use client";
 
-import { footerSectionsData, socialLinks } from "@/lib/constant";
+import { footerSectionsData, socialLinks } from "@/constants/landing-page";
 import Link from "next/link";
 import React from "react";
 import LanguageMenu from "./language-menu";

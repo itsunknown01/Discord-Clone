@@ -1,12 +1,11 @@
+import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
 // import { SocketProvider } from "@/hooks/context/use-socket-context";
-// import { currentProfile } from "@/services/profile/current-profile";
+import { currentProfile } from "@/services/profile/current-profile";
 // import { db } from "@/services/db";
-// import { redirect } from "next/navigation";
 import NavigationSidebar from "@/components/navigation/navigation-sidebar";
-import ModalProvider from "@/components/providers/modal-provider";
-import { servers } from "@/data";
+import { fetchServersWithProfile } from "@/services/servers";
 // import { getDataWithCache } from "@/services/cache";
 // import { Server } from "@prisma/client";
 
@@ -15,11 +14,13 @@ export default async function SetupLayout({
 }: {
   children: ReactNode;
 }) {
-  //   const profile = await currentProfile();
+  const profile = await currentProfile();
 
-  //   if (!profile) {
-  //     return redirect("/login");
-  //   }
+  if (!profile) {
+    return redirect("/login");
+  }
+
+  const servers = await fetchServersWithProfile({ profileId: profile.id });
 
   //   const servers = await getDataWithCache({
   //     queryKey: `Servers:${profile.id}`,
@@ -37,7 +38,6 @@ export default async function SetupLayout({
         <NavigationSidebar servers={servers} />
       </div>
       <main className="pl-[72px] h-full">
-        <ModalProvider />
         {children}
       </main>
     </div>

@@ -1,19 +1,24 @@
 import { create } from "zustand";
 
-type ModalType = "createServer" | "searchModal";
+export type ModalType = "createServer" | "searchModal" | "openMessage";
 
-interface ModalData {}
+interface ModalData {
+    friends?: any[];
+    email?:string
+  }
 
 interface ModalState {
-  type: ModalType | null;
-  isOpen: boolean;
-  onOpen: (type: ModalType) => void;
-  onClose: () => void;
-}
+    type: ModalType | null;
+    data: ModalData;
+    isOpen: boolean;
+    onOpen: (type: ModalType, data?: ModalData) => void;
+    onClose: () => void;
+  }
 
-export const useModalStore = create<ModalState>((set) => ({
-  type: null,
-  isOpen: false,
-  onOpen: (type) => set({ isOpen: true, type }),
-  onClose: () => set({ isOpen: false, type: null }),
+export const useModalStore = create<ModalState>(set =>({
+    type: null,
+    data: {},
+    isOpen: false,
+    onOpen: (type, data = {}) => set({ isOpen: true, type, data }),
+    onClose: () => set({ type: null, isOpen: false })
 }));

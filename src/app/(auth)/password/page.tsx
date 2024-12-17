@@ -1,4 +1,4 @@
-import PasswordForm from "@/components/forms/password-form";
+import PasswordForm from "@/components/auth/password-form";
 import AuthWrapper from "@/components/wrapper/auth-wrapper";
 import React from "react";
 
@@ -9,7 +9,7 @@ const PasswordPage = ({
 }) => {
   return (
     <AuthWrapper
-      className="bg-[#313338] border-none p-4 text-white"
+      className="bg-[#313338] border-none py-4 text-white w-[480px]"
       isAuthorise={true}
       title="Change Your Password"
     >

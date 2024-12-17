@@ -7,7 +7,7 @@ const AuthorisePage = async ({
     token: string;
   };
 }) => {
-  return <AuthoriseClient token={searchParams.token} />;
+  return <AuthoriseClient token={searchParams!.token} />;
 };
 
 export default AuthorisePage;

@@ -40,10 +40,10 @@ export default function AuthWrapper({
 }: AuthWrapperProps) {
   return (
     <CardWrapper
-      className={cn("flex", className, isAuthorise ? "flex-col" : "")}
+      className={cn("flex", className, isAuthorise ? "flex-col justify-center" : "")}
     >
       {isAuthorise && (
-        <div className="flex items-center justify-center h-full w-full py-2">
+        <div className="flex items-center justify-center h-24 md:h-full w-full py-2">
           <Image
             src="/authorise-icon.svg"
             height={94}
@@ -73,7 +73,7 @@ export default function AuthWrapper({
             )}
             <Button
               variant="link"
-              className="font-normal pl-0 text-white"
+              className="font-normal pl-0 text-blue-400"
               size="sm"
               asChild
             >

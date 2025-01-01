@@ -1,13 +1,16 @@
+"use client"
+
 import React from "react";
 import { TabsList, TabsTrigger } from "../ui/tabs";
 import { FriendsTabEnum, friendsTabs } from "@/constants/me-page";
 import { cn } from "@/lib/utils";
 import BadgeCount from "../common/badge-count";
+import { useTabStore } from "@/hooks/use-tab-store";
 
 const MeTabs = ({ count }: { count: number }) => {
   const PendingBadge = <BadgeCount className="ml-1" count={count} />;
 
-  const currentTab: FriendsTabEnum = FriendsTabEnum.Online;
+  const { currentTab } = useTabStore();
 
   return (
     <TabsList className="bg-inherit gap-4">

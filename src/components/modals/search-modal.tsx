@@ -10,6 +10,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogTitle,
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { ListItem } from "../ui/list";
@@ -25,19 +26,20 @@ const SearchModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={() => onClose()}>
-      <DialogContent className="h-[360px] p-0 overflow-hidden bg-zinc-800">
-        <DialogHeader className="px-6 pt-8 mt-2">
+      <DialogContent className="max-h-[360px] p-0 overflow-hidden bg-zinc-800 py-4">
+        <DialogTitle className="hidden">Search</DialogTitle>
+        <div className="px-6 pt-4 mt-2">
           <Input
-            className="h-14"
+            className="h-14 px-6"
             placeholder="Where would you like to go?"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-        </DialogHeader>
+        </div>
         <DialogDescription className="px-6">
-          <div className="text-xs font-semibold text-gray-400 text-start">
+          <span className="text-xs font-semibold text-gray-400 text-start">
             LAST CHANNELS
-          </div>
+          </span>
         </DialogDescription>
         <ScrollArea className="px-6">
           {filteredList.length > 0 ? (

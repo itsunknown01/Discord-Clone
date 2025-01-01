@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BiNotification,
   BiPin,
@@ -26,6 +26,9 @@ import {
 import { cn } from "@/lib/utils";
 import HybridButton from "../ui/hybrid-button";
 import { Bell, Hash } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useSocket } from "../providers/socket-provider";
+import { UserStatus } from "@prisma/client";
 
 const headerIcons = [
   {
@@ -66,13 +69,14 @@ const channelChatIcons = [
   {
     icon: <Hash className="h-5 w-5" />,
     tooltip: "Threads",
-    href: ""
+    href: "",
   },
   {
     icon: <Bell size={20} />,
     tooltip: "Notification Settings",
     href: "",
-  },{
+  },
+  {
     icon: <BiPin size={20} />,
     tooltip: "Pin Message",
     href: "",
@@ -89,16 +93,49 @@ const channelChatIcons = [
     href: "https://github.com/igorm84/rediscord",
     tooltip: "Author github",
   },
-]
+];
 
 interface ChatHeaderProps {
   conversation: any;
   type: "server" | "direct";
+  profileId: string | undefined;
 }
 
-const ChatHeader = ({ conversation, type }: ChatHeaderProps) => {
+const ChatHeader = ({ conversation, type, profileId }: ChatHeaderProps) => {
+  const params = useParams();
+
   const [open, setOpen] = useState(false);
-  const iconsArray = type === "direct" ? headerIcons : channelChatIcons
+  const [status,setStatus] = useState<UserStatus>(UserStatus.Offline)
+
+  const iconsArray = type === "direct" ? headerIcons : channelChatIcons;
+
+  const { onlineUsers } = useSocket();
+
+  useEffect(() => {
+    const statusMap: { [key: string]: void } = {};
+
+    if (params.conversationId === profileId) {
+      statusMap[conversation.friendId] = onlineUsers.includes(
+        conversation.friendId
+      )
+        ? setStatus("Online")
+        : setStatus("Offline");
+    } else {
+      statusMap[conversation.profileId] = onlineUsers.includes(
+        conversation.profileId
+      )
+        ? setStatus("Online")
+        : setStatus("Offline");
+    }
+  }, [
+    conversation.friendId,
+    conversation.profileId,
+    onlineUsers,
+    params.conversationId,
+    profileId,
+    setStatus,
+  ]);
+
   return (
     <PageHeader>
       <div className="flex items-center gap-4 text-white">
@@ -110,10 +147,14 @@ const ChatHeader = ({ conversation, type }: ChatHeaderProps) => {
               size="sm"
               src={conversation!.profile?.imageUrl}
               alt="avatar"
-              status={conversation!.profile?.status}
+              status={status}
             />
           )}
-          {type === "direct" ? conversation.profile?.name : conversation.name}
+          {type === "direct"
+            ? conversation.profileId === params.conversationId
+              ? conversation.profile.name
+              : conversation.friend.name
+            : conversation.name}
         </div>
       </div>
       <div className="flex items-center gap-6">

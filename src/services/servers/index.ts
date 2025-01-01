@@ -5,7 +5,7 @@ export interface ServerWithProfile extends Server {
     profile: Profile
 }
 
-export const fetchServersWithProfile = async ({ profileId }: { profileId: string }) => {
+export const fetchServersWithProfile = async (profileId: string ) => {
   try {
     const servers = await db.server.findMany({
       where: { profileId: profileId },

@@ -1,3 +1,5 @@
+import { Activity, Friends, Profile } from "@prisma/client";
+
 export interface SocialLinksTypes {
   name: string;
   link: string;
@@ -37,30 +39,12 @@ export interface VoiceStatus {
   serverMuted?: boolean;
 }
 
-export type Profile = {
-  id: string;
-  userId: string;
-  name: string;
-  email: string;
-  username: string;
-  imageUrl?: string | null;
-  status: UserStatus;
-};
-
-export type Friends = {
-  id: string;
-  status: UserStatus;
-  type: FriendType;
-  profileId: string;
-  friendId: string;
-};
-
 export type FriendsWithProfile = {
   id: string;
-  status: UserStatus;
+  status?: UserStatus;
   type: FriendType;
-  profileId: string;
-  friendId: string;
+  profileId?: string;
+  friendId?: string;
   profile: Profile;
 };
 
@@ -86,3 +70,16 @@ export type Channel = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export interface FriendsWithProfileAndActivity extends Friends {
+  profile: Profile;
+  activity: Activity[];
+}
+
+export type UserStatusType =
+  | "Online"
+  | "DND"
+  | "Idle"
+  | "Mobile"
+  | "Blocked"
+  | "Offline";

@@ -1,7 +1,11 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import UserAvatar from "../common/user-avatar";
 import { Separator } from "../ui/separator";
+import { useSocket } from "../providers/socket-provider";
+import { useEffect, useState } from "react";
+import { UserStatusType } from "@/types";
 
 interface ChatMessageProps {
   message: any;
@@ -16,103 +20,75 @@ export default function ChatMessage({
   currentUser,
   isFirstMessageOfDay,
 }: ChatMessageProps) {
+  const params = useParams();
+  const [status, setStatus] = useState<UserStatusType>("Offline");
+
+  const { onlineUsers } = useSocket();
+
+  useEffect(() => {
+    const statusMap: { [key: string]: void } = {};
+
+    if (params.conversationId === currentUser.id) {
+      statusMap[user.friendId] = onlineUsers.includes(user.friendId)
+        ? setStatus("Online")
+        : setStatus("Offline");
+    } else {
+      statusMap[user.profileId] = onlineUsers.includes(user.profileId)
+        ? setStatus("Online")
+        : setStatus("Offline");
+    }
+  }, [
+    user.friendId,
+    user.profileId,
+    onlineUsers,
+    params.conversationId,
+    currentUser.id,
+    setStatus,
+  ]);
   return (
     <>
       {isFirstMessageOfDay && (
         <div className="flex items-center">
           <Separator className="h-[1px] bg-white w-[45%] my-2" />
           <p className="flex  whitespace-nowrap px-1 text-xs font-semibold text-gray-400">
-            {message.timestamp}
+            {new Date(message.timestamp).toDateString()}
           </p>
           <Separator className="h-[1px] bg-white w-[45%] my-2" />
         </div>
       )}
-      <div className="flex mb-2">
+      {/* <div className="flex my-2">
         <UserAvatar
           className={`z-[1]`}
           size="sm"
           src={
-            message?.userId === user?.id ? user?.avatar : currentUser?.avatar
+            message?.senderId === user?.profileId || user?.friendId
+              ? currentUser?.avatar
+              : user.profileId === params.conversationId
+                ? user.friend.imageUrl
+                : user?.profile.imageUrl
           }
           alt="Avatar"
-          status={user?.status}
+          status={status}
         />
         <div className="flex w-full flex-col overflow-hidden ml-2">
-            <div className="flex items-center justify-start">
-              <div className="text-sm font-semibold">
-                {message.userId === user.id ? user.name : currentUser.name}
-              </div>
-              <div className=" ml-2 text-xs text-gray-400">
-                {new Date(message.timestamp).toLocaleTimeString([], {
-                  hour: "numeric",
-                  minute: "numeric",
-                })}
-              </div>
+          <div className="flex items-center justify-start">
+            <div className="text-sm font-semibold">
+              {message.receiverId === user.id
+                ? currentUser.name
+                : user.profileId === params.conversationId
+                  ? user.friend.name
+                  : user?.profile.name}
             </div>
-          <div>{message.text}</div>
+            <div className=" ml-2 text-xs text-gray-400">
+              {new Date(message.timestamp).toLocaleTimeString([], {
+                hour: "numeric",
+                minute: "numeric",
+              })}
+            </div>
+          </div>
+          <div>{message.message}</div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }
-{
-  /* <div
-ref={chatContainerRef}
-key={message.id}
-className={`  ${
-  index === 0 || messages[index]?.userId !== messages[index - 1]?.userId
-    ? "my-4"
-    : "my-0 h-fit"
-} relative flex items-start gap-2`}
->
-{message.bot === "endCall" ? (
-  <div className="flex items-center space-x-2 py-1 text-xs text-gray-300">
-    <MdCall className="text-lg text-green-500" />
-    <p className="text-white"> {currentUser?.name}</p>
-    <p className=""> {message.text}</p>
-    <div className=" text-xs text-gray-400">
-      {new Date(message.timestamp).toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "numeric",
-      })}
-    </div>
-  </div>
-) : (
-  <>
-    <Avatar
-      className={` ${
-        index === 0 ||
-        messages[index]?.userId !== messages[index - 1]?.userId
-          ? "opacity-100"
-          : "!h-0 opacity-0"
-      } z-[1]`}
-      size="sm"
-      src={
-        message?.userId === user?.id ? user?.avatar : currentUser?.avatar
-      }
-      alt="Avatar"
-      status={user?.status}
-    />
-    <div className="flex w-full flex-col overflow-hidden ml-2">
-      {(index === 0 ||
-        messages[index]?.userId !== messages[index - 1]?.userId) && (
-        <div className="flex items-center justify-start">
-          <div className="text-sm font-semibold">
-            {message?.userId === user?.id
-              ? user?.name
-              : currentUser?.name}
-          </div>
-          <div className=" ml-2 text-xs text-gray-400">
-            {new Date(message.timestamp).toLocaleTimeString([], {
-              hour: "numeric",
-              minute: "numeric",
-            })}
-          </div>
-        </div>
-      )}
-      <div>{message.text}</div>
-    </div>
-  </>
-)} */
-}
-// </div>

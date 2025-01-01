@@ -5,7 +5,7 @@ import { friends, profile } from "@/data";
 
 const MeContent = () => {
   return (
-    <PageContent className="flex-col lg:flex-row">
+    <PageContent className="flex-col lg:flex-row !h-screen">
       <div className="flex flex-1 px-6 pt-4">
         <MeFriendsContent
           friends={friends}

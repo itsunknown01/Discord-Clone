@@ -1,12 +1,12 @@
+import { UserStatusType } from "@/hooks/use-tab-store";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { BsDiscord } from "react-icons/bs";
-;
-import { cn } from "@/lib/utils";
-import { UserStatus } from "@/types";
 import StatusBadge from "./status-badge";
+;
 
 interface UserAvatarProps {
-  status?: UserStatus;
+  status?: UserStatusType;
   size?: "sm" | "md" | "lg";
   src?: string | null;
   alt: string;

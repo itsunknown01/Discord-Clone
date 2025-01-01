@@ -5,8 +5,13 @@ import {
   PopoverTooltipContent,
   PopoverTooltipProvider,
 } from "../feature/popover-tooltip";
+import { FriendsWithProfileAndActivity } from "@/types";
 
-const ConversationHeader = ({friends}: {friends: any[]}) => {
+const ConversationHeader = ({
+  friends,
+}: {
+  friends: FriendsWithProfileAndActivity[] | undefined;
+}) => {
   const [open, setOpen] = useState(false);
   return (
     <PopoverTooltipProvider

@@ -3,6 +3,7 @@
 import React from "react";
 import UserAvatar from "../common/user-avatar";
 import { cn } from "@/lib/utils";
+import { useParams } from "next/navigation";
 
 interface UserProfileInfoProps {
   user: any;
@@ -17,6 +18,7 @@ export function ChatUserInfo({
   isFriend,
   isChannel = false,
 }: UserProfileInfoProps) {
+  const params = useParams();
   return (
     <div
       className={cn(
@@ -42,12 +44,18 @@ export function ChatUserInfo({
             <span>Welcome to </span>
             {user.name}
           </>
+        ) : user.profileId === params.conversationId ? (
+          user.profile.name
         ) : (
-          user?.profile.name
+          user?.friend.name
         )}
       </p>
       {!isChannel && (
-        <p className="my-2 text-xl font-semibold"> {user?.profile.username}</p>
+        <p className="my-2 text-xl font-semibold">
+          {user.profileId === params.conversationId
+            ? user.profile.username
+            : user?.friend.username}
+        </p>
       )}
       <span className={cn("text-base text-gray-300", isChannel && "mb-6")}>
         {isChannel ? (
@@ -56,7 +64,9 @@ export function ChatUserInfo({
           <>
             This is the beginning of your story with
             <span className="ml-1 font-semibold text-gray-200">
-              {user?.profile.name}
+              {user.profileId === params.conversationId
+                ? user.profile.name
+                : user?.friend.name}
             </span>
           </>
         )}

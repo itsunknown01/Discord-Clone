@@ -1,30 +1,18 @@
-// import ConversationSidebar from "@/components/conversation/conversation-sidebar";
-// import { currentProfile } from "@/services/profile/current-profile";
+import { currentProfile } from "@/services/profile/current-profile";
 // import { getDataWithCache } from "@/services/cache";
-// import { db } from "@/services/db";
+import { db } from "@/services/db";
 
 import ConversationSidebar from "@/components/conversation/conversation-sidebar";
-import { friends, profile } from "@/data";
+import { fetchAllFriendsWithProfileAndActivity } from "@/services/friends";
 
 export default async function MeLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-//   const profile = await currentProfile();
+  const profile = await currentProfile();
 
-//   const friends = await getDataWithCache({
-//     queryKey: `AllFriends:${profile?.userId}`,
-//     query: await db.friends.findMany({ 
-//       where: {
-//         friendId: profile?.id,
-//       },
-//       include: {
-//         profile: true,
-//         activity: true,
-//       },
-//     })
-//   });
+  const friends = await fetchAllFriendsWithProfileAndActivity(profile!.id);
 
   return (
     <div className="h-full w-full">

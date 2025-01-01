@@ -22,10 +22,9 @@ const AuthoriseClient = ({ token }: { token: string }) => {
     "If you followed this link after trying to log in on the desktop or mobile app, please go back and try again.";
 
   // Todo spinner animation
-  return isPending ?
-  (
+  return isPending ? (
     <div>Loading...</div>
-  ) :(
+  ) : (
     <AuthWrapper
       className="bg-[#313338] border-none py-4 w-[480px] text-white"
       title={title}

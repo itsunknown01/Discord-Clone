@@ -3,30 +3,41 @@
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { Input } from "../ui/input";
 import ChatFeatureButton from "./chat-feature-button";
+import { useSocket } from "../providers/socket-provider";
+import { useParams } from "next/navigation";
 
 interface ChatInputProps {
   conversation: any;
-  setMessages: Dispatch<SetStateAction<any[]>>;
+  currentUser: any;
 }
 
-const ChatInput = ({ conversation, setMessages }: ChatInputProps) => {
+const ChatInput = ({ conversation, currentUser }: ChatInputProps) => {
   const [message, setMessage] = useState("");
+
+  const params = useParams();
+  const { socket } = useSocket();
+
   const addMessage = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newMessage = {
-      id: 1,
-      text: message,
-      userId: "757a8534-7fe1-4a3e-9872-34167d5a1ea2",
-      timestamp: "13-12-2024",
-    };
+    socket?.emit("send-message", {
+      senderId: currentUser.id,
+      receiverId:
+        params.conversationId === conversation.profileId
+          ? conversation.profileId
+          : conversation.friendId,
+      message,
+      timestamp: Date.now(),
+    });
 
-    setMessages((prev) => [...prev, newMessage]);
-    setMessage("")
+    setMessage("");
   };
   return (
-    <form className="relative mb-6 mx-6 bg-zinc-700 rounded-md" onSubmit={addMessage}>
+    <form
+      className="relative mb-6 mx-6 bg-zinc-700 rounded-md"
+      onSubmit={addMessage}
+    >
       <Input
-        className=" py-[1.3rem] pl-12 pr-36 bg-zinc-700 border-none"
+        className=" py-[1.3rem] pl-12 pr-36 bg-zinc-700 border-none focus-visible:ring-0"
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}

@@ -1,5 +1,5 @@
 import { FriendsTabEnum } from "@/constants/me-page";
-import { FriendsWithProfile, UserStatus } from "@/types";
+import { UserStatus } from "@/types";
 import { BsChatLeftFill, BsCheck2, BsThreeDotsVertical, BsX } from "react-icons/bs";
 import UserAvatar from "../common/user-avatar";
 import { ListItem } from "../ui/list";
@@ -17,7 +17,7 @@ interface MeFriendItemProps {
       text: string;
     };
   };
-  friend: FriendsWithProfile;
+  friend: any;
 }
 
 const MeFriendItem = ({ tab, friend }: MeFriendItemProps) => {
@@ -26,15 +26,15 @@ const MeFriendItem = ({ tab, friend }: MeFriendItemProps) => {
       href={
         tab.id === FriendsTabEnum.Pending
           ? ""
-          : `/channels/me/${friend?.profileId ? friend.profileId : friend.id}`
+          : `/channels/me/${friend?.profileId}`
       }
       className={`group justify-between border-t-[1px] border-zinc-800 py-2.5 pr-3 `}
       noVerticalPadding
     >
       <div className="flex items-center gap-3">
         <UserAvatar
-          src={friend.profile.imageUrl}
-          alt={friend.profile.name}
+          src={friend!.imageUrl}
+          alt={friend.name}
           className="flex-none"
           status={
             tab.id === FriendsTabEnum.Pending
@@ -44,9 +44,9 @@ const MeFriendItem = ({ tab, friend }: MeFriendItemProps) => {
         />
         <div className="flex-1 leading-4">
           <div className="flex items-center gap-1.5 text-sm text-gray-200">
-            <span className="font-semibold">{friend?.profile.name}</span>
+            <span className="font-semibold">{friend?.name}</span>
             <span className="hidden text-xs text-gray-400 group-hover:block">
-              {friend.profile.username}
+              {friend.username}
             </span>
           </div>
           <div className="text-[13px] text-gray-300">

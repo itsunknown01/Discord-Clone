@@ -1,17 +1,18 @@
 "use client";
 
 import { Header } from "@/components/common/header";
-import { MenuItem } from "../common/menu-item";
 import { conversationMenuItems } from "@/constants/me-page";
-import { usePathname } from "next/navigation";
-import ConversationList from "./conversation-list";
-import CurrentUserStatus from "../current-user-status";
-import { Friends, Profile } from "@/types";
 import { useModalStore } from "@/hooks/use-modal-store";
+import { FriendsWithProfileAndActivity } from "@/types";
+import { Profile } from "@prisma/client";
+import { usePathname } from "next/navigation";
+import { MenuItem } from "../common/menu-item";
+import CurrentUserStatus from "../current-user-status";
+import ConversationList from "./conversation-list";
 
 interface ConversationSidebarProps {
-  friends: Friends[];
-  profile: Profile;
+  friends: FriendsWithProfileAndActivity[] | undefined;
+  profile: Profile | undefined | null;
 }
 
 export default function ConversationSidebar({
@@ -48,7 +49,7 @@ export default function ConversationSidebar({
             />
           ))}
         </div>
-        <ConversationList friends={friends} />
+        <ConversationList friends={friends} profileId={profile!.id} />
       </div>
       <CurrentUserStatus profile={profile} />
     </div>

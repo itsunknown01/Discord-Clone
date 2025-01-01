@@ -1,16 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { isSameDay } from "date-fns";
 import { PageContent } from "../ui/page";
 import { ChatUserInfo } from "./chat-userInfo";
 import ChatMessage from "./chat-message";
-import { Profile } from "@/types";
 import ChatInput from "./chat-input";
+import { Profile } from "@prisma/client";
+import { useSocket } from "../providers/socket-provider";
 
 interface ChatContentProps {
   conversation: any;
-  currentUser: Profile;
+  currentUser: Profile | undefined | null;
   isChannel?: boolean;
 }
 
@@ -19,7 +20,35 @@ const ChatContent = ({
   currentUser,
   isChannel,
 }: ChatContentProps) => {
-  const [messages, setMessages] = useState<any[]>([]);
+  const { socket } = useSocket();
+
+  const [messages, setMessages] = useState<any[]>([
+    // {
+    //   id: 1,
+    //   text: "Hello!",
+    //   timestamp: "13-12-2024",
+    //   userId: conversation.profileId,
+    // },
+    // {
+    //   id: 2,
+    //   text: "Hi there!",
+    //   timestamp: "13-12-2024",
+    //   userId: currentUser!.id,
+    // },
+  ]);
+
+  useEffect(() => {
+    socket?.on("receive-message", (message) => {
+      console.log(message)
+      setMessages((prev) => [...prev, {...message}]);
+    });
+
+    return () => {
+      socket?.off("receive-message");
+    };
+  }, [socket]);
+
+  console.log(messages)
 
   return (
     <PageContent className="flex flex-col justify-end w-full h-full !text-white">
@@ -33,7 +62,7 @@ const ChatContent = ({
         {messages.map((message, idx) => {
           const isFirstMessageOfDay =
             idx === 0 ||
-            !isSameDay(message.timestamp, messages[idx - 1].timestamp);
+            !isSameDay(new Date(message.timestamp), messages[idx - 1].timestamp);
           return (
             <ChatMessage
               key={message.id}
@@ -45,7 +74,7 @@ const ChatContent = ({
           );
         })}
       </div>
-      <ChatInput conversation={conversation} setMessages={setMessages} />
+      <ChatInput conversation={conversation} currentUser={currentUser} />
     </PageContent>
   );
 };

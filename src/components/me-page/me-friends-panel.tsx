@@ -1,18 +1,24 @@
+"use client";
+
 import React from "react";
 import { List, ListItem } from "../ui/list";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 import UserAvatar from "../common/user-avatar";
 import Image from "next/image";
 import { Separator } from "../ui/separator";
 import { FriendsWithProfile, UserStatus } from "@/types";
+import { useSocket } from "../providers/socket-provider";
 
-const MeFriendsPanel = ({friends} : {friends: FriendsWithProfile[]}) => {
-    const filteredList = friends.filter(
-        (friend) =>
-        //   friend.activity &&
-        //   friend.activity.type === ActivityType.Playing &&
-          friend.status !== UserStatus.Offline
-      );
+const MeFriendsPanel = ({ friends }: { friends: any[] }) => {
+  const { onlineUsers } = useSocket();
+  const filteredList = friends.filter(
+    (friend) => onlineUsers.includes(friend.profileId)
+  );
   return (
     <div className="flex-1 border-l-[1px] border-gray-800 p-4">
       <h1 className="mb-4 text-lg text-white font-extrabold">Active Now</h1>
@@ -27,15 +33,13 @@ const MeFriendsPanel = ({friends} : {friends: FriendsWithProfile[]}) => {
                     className="group gap-3 border-[1px] border-gray-800  bg-midground p-4"
                   >
                     <UserAvatar
-                      src={friend.profile?.imageUrl as string}
-                      alt={friend.profile?.name as string}
+                      src={friend.imageUrl as string}
+                      alt={friend.name as string}
                       status={friend.status}
                       className="w-8 flex-none"
                     />
                     <div className="flex-1 truncate text-sm">
-                      <span className="text-gray-100">
-                        {friend.profile?.name}
-                      </span>
+                      <span className="text-gray-100">{friend?.name}</span>
                       {/* {friend.activity && (
                         <div className="h-4 truncate text-xs leading-3">
                           {friend.activity.type} -
@@ -74,12 +78,12 @@ const MeFriendsPanel = ({friends} : {friends: FriendsWithProfile[]}) => {
                     <Separator className="my-1 w-full" />
                     <div className="flex w-full items-center rounded  px-2 transition-colors duration-300 ease-in-out hover:bg-blue-600">
                       <UserAvatar
-                        src={friend.profile?.imageUrl as string}
-                        alt={friend.profile?.name as string}
+                        src={friend?.imageUrl as string}
+                        alt={friend?.name as string}
                         status={friend.status}
                         className="mr-2 !w-6 flex-none"
                       />
-                      <p> {friend.profile?.name}</p>
+                      <p> {friend?.name}</p>
                     </div>
                   </div>
                 </TooltipContent>

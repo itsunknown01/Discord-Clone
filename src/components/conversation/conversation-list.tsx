@@ -25,7 +25,7 @@ const ConversationList = ({
           <ConversationListItem
             key={friend.id}
             active={params.conversationId === friend.id}
-            friend={friend}
+            item={friend}
             profileId={profileId}
             onDelete={() => {}}
           />

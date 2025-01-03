@@ -6,11 +6,11 @@ export const fetchAllFriendsWithProfileAndActivity = async (
   try {
     const friends = await db.friends.findMany({
       where: {
-        OR: [{ friendId: profileId }, { profileId }],
+        OR: [{ profile1Id: profileId }, { profile2Id: profileId }],
       },
       include: {
-        profile: true,
-        friend: true,
+        profile1: true,
+        profile2: true,
         activity: true,
       },
     });
@@ -27,11 +27,11 @@ export const fetchAllFriendsWithProfile = async (
   try {
     const friends = await db.friends.findMany({
       where: {
-        OR: [{ friendId: profileId }, { profileId }],
+        OR: [{ profile1Id: profileId }, { profile2Id: profileId }],
       },
       include: {
-        profile: true,
-        friend: true,
+        profile1: true,
+        profile2: true,
       },
     });
 

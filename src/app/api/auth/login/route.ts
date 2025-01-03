@@ -25,24 +25,24 @@ export async function POST(req: Request, res: Response) {
     return NextResponse.json({ message: "User already exists" });
   }
 
-  if (!existingUser.emailVerified) {
-    const verificationToken = await generateVerificationToken(
-      existingUser.email
-    );
-    const passwordToken = await generatePasswordToken(verificationToken.email);
+  // if (!existingUser.emailVerified) {
+  //   const verificationToken = await generateVerificationToken(
+  //     existingUser.email
+  //   );
+  //   const passwordToken = await generatePasswordToken(verificationToken.email);
 
-    await sendVerificationEmail({
-      email: verificationToken.email,
-      verificationToken: verificationToken.token,
-      passwordToken: passwordToken.token,
-      userName: existingUser.username,
-    });
+  //   await sendVerificationEmail({
+  //     email: verificationToken.email,
+  //     verificationToken: verificationToken.token,
+  //     passwordToken: passwordToken.token,
+  //     userName: existingUser.username,
+  //   });
 
-    return NextResponse.json({
-      message: "Confirmation email sent",
-      status: 200,
-    });
-  }
+  //   return NextResponse.json({
+  //     message: "Confirmation email sent",
+  //     status: 200,
+  //   });
+  // }
 
   try {
     await signIn("credentials", {

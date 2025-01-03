@@ -9,66 +9,51 @@ import { useSocket } from "../providers/socket-provider";
 import { ListItem } from "../ui/list";
 
 interface ConversationListItem {
-  friend: any;
+  item: any;
   active: boolean;
   onDelete: () => void;
   profileId: string;
 }
 
 const ConversationListItem = ({
-  friend,
+  item,
   active,
   onDelete,
-  profileId,
 }: ConversationListItem) => {
   const params = useParams();
+  const { onlineUsers } = useSocket();
+
   const [status, setStatus] = useState<UserStatusType>("Offline");
 
-  const { onlineUsers } = useSocket();
-  
+  const { profile1, profile2 } = item;
+
+  const friend = profile1.id !== params.conversationId ? profile2 : profile1;
+
   useEffect(() => {
     const statusMap: { [key: string]: void } = {};
 
-    if (params.conversationId === friend.friendId) {
-      statusMap[friend.friendId] = onlineUsers.includes(friend.friendId)
-        ? setStatus("Online")
-        : setStatus("Offline");
-    } else {
-      statusMap[friend.profileId] = onlineUsers.includes(friend.profileId)
-        ? setStatus("Online")
-        : setStatus("Offline");
-    }
-  }, [
-    friend.friendId,
-    friend.profileId,
-    onlineUsers,
-    params.conversationId,
-    profileId,
-    setStatus,
-  ]);
+    statusMap[friend.id] = onlineUsers.includes(friend.id)
+      ? setStatus("Online")
+      : setStatus("Offline");
+  }, [friend.id, onlineUsers, setStatus]);
 
   return (
     <ListItem
       noVerticalPadding
       active={active}
-      href={`/channels/me/${friend.profileId === profileId ? friend.friendId : friend.profileId}`}
+      href={`/channels/me/${friend.id}`}
       className="group gap-3 py-1.5"
     >
       <UserAvatar
-        src={friend.profile.imageUrl}
+        src={friend.imageUrl}
         alt={
-          friend.profileId === profileId
-            ? friend.profile.name
-            : friend.friend.name
-        }
+         friend.name}
         status={status}
         className="w-8 flex-none"
       />
       <div className="flex-1 truncate text-sm">
-        {friend.profileId === profileId
-          ? friend.friend!.name
-          : friend.profile.name}
-        {friend.activity && (
+        {friend!.name}
+        {/* {friend.activity && (
           <div className="h-4 truncate text-xs leading-3">
             <span className="capitalize">{friend.activity?.type}</span>
             {friend.activity?.name}
@@ -77,7 +62,7 @@ const ConversationListItem = ({
               className="ml-0.5 inline-block"
             />
           </div>
-        )}
+        )} */}
       </div>
       <button
         onClick={(event) => {

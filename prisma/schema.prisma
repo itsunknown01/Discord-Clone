@@ -18,7 +18,6 @@ model User {
   password      String
 
   accounts Account[]
-  Profile  Profile?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -91,8 +90,6 @@ model Profile {
   receiveRequests      FriendRequets[] @relation("ReceivedRequests")
   conversationstared   Conversation[]  @relation("UserOne")
   conversationreceived Conversation[]  @relation("UserTwo")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -230,11 +227,11 @@ model Friends {
   type     FriendType
   activity Activity[]
 
-  profileId String
-  friendId  String
-
-  profile Profile @relation("Friends", fields: [profileId], references: [id])
-  friend  Profile @relation("FriendsOf", fields: [friendId], references: [id])
+  profile1Id String
+  profile1 Profile @relation("Friends", fields: [profile1Id], references: [id])
+  
+  profile2Id  String
+  profile2  Profile @relation("FriendsOf", fields: [profile2Id], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

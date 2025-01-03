@@ -16,23 +16,23 @@ export default async function MePage() {
   const friends = await fetchAllFriendsWithProfile(profile!.id);
 
   const formattedFriends = friends?.some(
-    (friend) => friend.profileId === profile!.id
+    (friend) => friend.profile1Id === profile!.id
   )
     ? friends!.map((friend) => ({
         id: friend.id,
-        profileId: friend.friendId,
-        name: friend.friend.name,
-        username: friend.friend.username,
-        imageUrl: friend.friend.imageUrl,
-        email: friend.friend.email,
+        profileId: friend.profile2Id,
+        name: friend.profile2.name,
+        username: friend.profile2.username,
+        imageUrl: friend.profile2.imageUrl,
+        email: friend.profile2.email,
       }))
     : friends!.map((friend) => ({
         id: friend.id,
-        profileId: friend.profileId,
-        name: friend.profile.name,
-        username: friend.profile.username,
-        imageUrl: friend.profile.imageUrl,
-        email: friend.profile.email,
+        profileId: friend.profile1Id,
+        name: friend.profile1.name,
+        username: friend.profile1.username,
+        imageUrl: friend.profile1.imageUrl,
+        email: friend.profile1.email,
       }));
 
   return (

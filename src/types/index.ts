@@ -72,7 +72,8 @@ export type Channel = {
 };
 
 export interface FriendsWithProfileAndActivity extends Friends {
-  profile: Profile;
+  profile1: Profile;
+  profile2: Profile
   activity: Activity[];
 }
 

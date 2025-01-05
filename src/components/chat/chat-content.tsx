@@ -10,13 +10,13 @@ import { Profile } from "@prisma/client";
 import { useSocket } from "../providers/socket-provider";
 
 interface ChatContentProps {
-  conversation: any;
+  otherUser: Profile;
   currentUser: Profile | undefined | null;
   isChannel?: boolean;
 }
 
 const ChatContent = ({
-  conversation,
+  otherUser,
   currentUser,
   isChannel,
 }: ChatContentProps) => {
@@ -39,8 +39,8 @@ const ChatContent = ({
 
   useEffect(() => {
     socket?.on("receive-message", (message) => {
-      console.log(message)
-      setMessages((prev) => [...prev, {...message}]);
+      console.log(message);
+      setMessages((prev) => [...prev, { ...message }]);
     });
 
     return () => {
@@ -48,13 +48,15 @@ const ChatContent = ({
     };
   }, [socket]);
 
-  console.log(messages)
+  console.log(messages);
 
   return (
     <PageContent className="flex flex-col justify-end w-full h-full !text-white">
       <div className="max-h-[86vh] !overflow-y-auto overflow-x-hidden mx-6">
         <ChatUserInfo
-          user={conversation}
+          imageUrl={otherUser.imageUrl}
+          name={otherUser.name}
+          userName={otherUser.username}
           handleAddDelete={() => {}}
           isFriend
           isChannel={isChannel}
@@ -62,19 +64,26 @@ const ChatContent = ({
         {messages.map((message, idx) => {
           const isFirstMessageOfDay =
             idx === 0 ||
-            !isSameDay(new Date(message.timestamp), messages[idx - 1].timestamp);
+            !isSameDay(
+              new Date(message.timestamp),
+              messages[idx - 1].timestamp
+            );
           return (
             <ChatMessage
               key={message.id}
               isFirstMessageOfDay={isFirstMessageOfDay}
-              user={conversation}
+              otherUser={otherUser}
               currentUser={currentUser}
               message={message}
             />
           );
         })}
       </div>
-      <ChatInput conversation={conversation} currentUser={currentUser} />
+      <ChatInput
+        name={otherUser.name}
+        otherUserId={otherUser.id}
+        currentUserId={currentUser!.id}
+      />
     </PageContent>
   );
 };

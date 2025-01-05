@@ -6,14 +6,18 @@ import { cn } from "@/lib/utils";
 import { useParams } from "next/navigation";
 
 interface UserProfileInfoProps {
-  user: any;
+  imageUrl: string | null;
+  name: string;
+  userName: string
   handleAddDelete: (type: "add" | "delete") => void;
   isFriend: boolean | undefined;
   isChannel?: boolean;
 }
 
 export function ChatUserInfo({
-  user,
+  imageUrl,
+  name,
+  userName,
   handleAddDelete,
   isFriend,
   isChannel = false,
@@ -29,7 +33,7 @@ export function ChatUserInfo({
       {!isChannel && (
         <UserAvatar
           className=" relative left-4 top-4 mb-12 scale-[2]"
-          src={user?.imageUrl}
+          src={imageUrl}
           alt="avatar"
         />
       )}
@@ -42,19 +46,15 @@ export function ChatUserInfo({
         {isChannel ? (
           <>
             <span>Welcome to </span>
-            {user.name}
+            {name}
           </>
-        ) : user.profileId === params.conversationId ? (
-          user.profile.name
         ) : (
-          user?.friend.name
+          name
         )}
       </p>
       {!isChannel && (
         <p className="my-2 text-xl font-semibold">
-          {user.profileId === params.conversationId
-            ? user.profile.username
-            : user?.friend.username}
+          {userName}
         </p>
       )}
       <span className={cn("text-base text-gray-300", isChannel && "mb-6")}>
@@ -64,9 +64,7 @@ export function ChatUserInfo({
           <>
             This is the beginning of your story with
             <span className="ml-1 font-semibold text-gray-200">
-              {user.profileId === params.conversationId
-                ? user.profile.name
-                : user?.friend.name}
+              {name}
             </span>
           </>
         )}

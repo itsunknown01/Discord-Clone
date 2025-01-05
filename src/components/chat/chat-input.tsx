@@ -1,30 +1,26 @@
 "use client";
 
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { FormEvent, useState } from "react";
+import { useSocket } from "../providers/socket-provider";
 import { Input } from "../ui/input";
 import ChatFeatureButton from "./chat-feature-button";
-import { useSocket } from "../providers/socket-provider";
-import { useParams } from "next/navigation";
 
 interface ChatInputProps {
-  conversation: any;
-  currentUser: any;
+  otherUserId: string;
+  name: string;
+  currentUserId: string;
 }
 
-const ChatInput = ({ conversation, currentUser }: ChatInputProps) => {
+const ChatInput = ({ otherUserId, currentUserId, name }: ChatInputProps) => {
   const [message, setMessage] = useState("");
 
-  const params = useParams();
   const { socket } = useSocket();
 
   const addMessage = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     socket?.emit("send-message", {
-      senderId: currentUser.id,
-      receiverId:
-        params.conversationId === conversation.profileId
-          ? conversation.profileId
-          : conversation.friendId,
+      senderId: currentUserId,
+      receiverId: otherUserId,
       message,
       timestamp: Date.now(),
     });
@@ -41,7 +37,7 @@ const ChatInput = ({ conversation, currentUser }: ChatInputProps) => {
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        placeholder={`write something to @${conversation.profile.name}`}
+        placeholder={`write something to @${name}`}
       />
       <div className="absolute inset-y-0 left-2.5 flex items-center text-gray-300">
         <ChatFeatureButton />

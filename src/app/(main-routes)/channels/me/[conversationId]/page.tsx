@@ -17,30 +17,33 @@ const ConversationPage = async ({
   const conversation = await getOrCreateConverstion(
     profile!.id,
     params.conversationId
-  );  
+  );
 
-  if(!conversation) {
-    return redirect(`/channels/me`)
+  if (!conversation) {
+    return redirect(`/channels/me`);
   }
 
-  const otherProfile = conversation.id === profile!.id ? 
+  const { UserOne, UserTwo } = conversation;
 
-  // return !conversation?.profileId || !conversation.friendId ? (
-  //   <div className="flex flex-col bg-zinc-800/90 shadow-lg shadow-zinc-700/5 h-screen">
-  //     <div className="p-4 text-base text-gray-400 ">
-  //       Ups probably we cannot find your conversation please back to main page
-  //     </div>
-  //   </div>
-  // ) : (
-  //   <Page>
-  //     <ChatHeader
-  //       conversation={conversation}
-  //       type="direct"
-  //       profileId={profile?.id}
-  //     />
-  //     <ChatContent conversation={conversation} currentUser={profile} />
-  //   </Page>
-  // );
+  const otherProfile = UserOne.id === profile!.id ? UserTwo : UserOne;
+
+  return !conversation.id ? (
+    <div className="flex flex-col bg-zinc-800/90 shadow-lg shadow-zinc-700/5 h-screen">
+      <div className="p-4 text-base text-gray-400 ">
+        Ups probably we cannot find your conversation please back to main page
+      </div>
+    </div>
+  ) : (
+    <Page>
+      <ChatHeader
+        name={otherProfile.name}
+        imageUrl={otherProfile.imageUrl}
+        otherProfileId={otherProfile.id}
+        type="direct"
+      />
+      <ChatContent otherUser={otherProfile} currentUser={profile} />
+    </Page>
+  );
 };
 
 export default ConversationPage;

@@ -6,17 +6,18 @@ import { Separator } from "../ui/separator";
 import { useSocket } from "../providers/socket-provider";
 import { useEffect, useState } from "react";
 import { UserStatusType } from "@/types";
+import { Profile } from "@prisma/client";
 
 interface ChatMessageProps {
   message: any;
-  user: any;
-  currentUser: any;
+  otherUser: Profile;
+  currentUser: Profile | null | undefined;
   isFirstMessageOfDay: boolean;
 }
 
 export default function ChatMessage({
   message,
-  user,
+  otherUser,
   currentUser,
   isFirstMessageOfDay,
 }: ChatMessageProps) {
@@ -25,26 +26,26 @@ export default function ChatMessage({
 
   const { onlineUsers } = useSocket();
 
-  useEffect(() => {
-    const statusMap: { [key: string]: void } = {};
+  // useEffect(() => {
+  //   const statusMap: { [key: string]: void } = {};
 
-    if (params.conversationId === currentUser.id) {
-      statusMap[user.friendId] = onlineUsers.includes(user.friendId)
-        ? setStatus("Online")
-        : setStatus("Offline");
-    } else {
-      statusMap[user.profileId] = onlineUsers.includes(user.profileId)
-        ? setStatus("Online")
-        : setStatus("Offline");
-    }
-  }, [
-    user.friendId,
-    user.profileId,
-    onlineUsers,
-    params.conversationId,
-    currentUser.id,
-    setStatus,
-  ]);
+  //   if (params.conversationId === currentUser.id) {
+  //     statusMap[user.friendId] = onlineUsers.includes(user.friendId)
+  //       ? setStatus("Online")
+  //       : setStatus("Offline");
+  //   } else {
+  //     statusMap[user.profileId] = onlineUsers.includes(user.profileId)
+  //       ? setStatus("Online")
+  //       : setStatus("Offline");
+  //   }
+  // }, [
+  //   user.friendId,
+  //   user.profileId,
+  //   onlineUsers,
+  //   params.conversationId,
+  //   currentUser.id,
+  //   setStatus,
+  // ]);
   return (
     <>
       {isFirstMessageOfDay && (
@@ -56,16 +57,14 @@ export default function ChatMessage({
           <Separator className="h-[1px] bg-white w-[45%] my-2" />
         </div>
       )}
-      {/* <div className="flex my-2">
+      <div className="flex my-2">
         <UserAvatar
           className={`z-[1]`}
           size="sm"
           src={
-            message?.senderId === user?.profileId || user?.friendId
-              ? currentUser?.avatar
-              : user.profileId === params.conversationId
-                ? user.friend.imageUrl
-                : user?.profile.imageUrl
+            message?.senderId === otherUser?.id
+              ? currentUser?.imageUrl
+              : otherUser.imageUrl
           }
           alt="Avatar"
           status={status}
@@ -73,11 +72,9 @@ export default function ChatMessage({
         <div className="flex w-full flex-col overflow-hidden ml-2">
           <div className="flex items-center justify-start">
             <div className="text-sm font-semibold">
-              {message.receiverId === user.id
-                ? currentUser.name
-                : user.profileId === params.conversationId
-                  ? user.friend.name
-                  : user?.profile.name}
+              {message.receiverId === otherUser.id
+                ? currentUser!.name
+                : otherUser.name}
             </div>
             <div className=" ml-2 text-xs text-gray-400">
               {new Date(message.timestamp).toLocaleTimeString([], {
@@ -88,7 +85,7 @@ export default function ChatMessage({
           </div>
           <div>{message.message}</div>
         </div>
-      </div> */}
+      </div>
     </>
   );
 }

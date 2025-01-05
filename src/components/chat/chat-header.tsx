@@ -96,16 +96,20 @@ const channelChatIcons = [
 ];
 
 interface ChatHeaderProps {
-  conversation: any;
+  imageUrl: string | null;
+  name: string;
+  otherProfileId: string;
   type: "server" | "direct";
-  profileId: string | undefined;
 }
 
-const ChatHeader = ({ conversation, type, profileId }: ChatHeaderProps) => {
-  const params = useParams();
-
+const ChatHeader = ({
+  name,
+  imageUrl,
+  otherProfileId,
+  type
+}: ChatHeaderProps) => {
   const [open, setOpen] = useState(false);
-  const [status,setStatus] = useState<UserStatus>(UserStatus.Offline)
+  const [status, setStatus] = useState<UserStatus>(UserStatus.Offline);
 
   const iconsArray = type === "direct" ? headerIcons : channelChatIcons;
 
@@ -114,27 +118,10 @@ const ChatHeader = ({ conversation, type, profileId }: ChatHeaderProps) => {
   useEffect(() => {
     const statusMap: { [key: string]: void } = {};
 
-    if (params.conversationId === profileId) {
-      statusMap[conversation.friendId] = onlineUsers.includes(
-        conversation.friendId
-      )
-        ? setStatus("Online")
-        : setStatus("Offline");
-    } else {
-      statusMap[conversation.profileId] = onlineUsers.includes(
-        conversation.profileId
-      )
-        ? setStatus("Online")
-        : setStatus("Offline");
-    }
-  }, [
-    conversation.friendId,
-    conversation.profileId,
-    onlineUsers,
-    params.conversationId,
-    profileId,
-    setStatus,
-  ]);
+    statusMap[otherProfileId] = onlineUsers.includes(otherProfileId)
+      ? setStatus("Online")
+      : setStatus("Offline");
+  }, [otherProfileId, onlineUsers, setStatus]);
 
   return (
     <PageHeader>
@@ -143,18 +130,9 @@ const ChatHeader = ({ conversation, type, profileId }: ChatHeaderProps) => {
           {type === "server" ? (
             <Hash className="w-5 h-5 text-zinc-400" />
           ) : (
-            <UserAvatar
-              size="sm"
-              src={conversation!.profile?.imageUrl}
-              alt="avatar"
-              status={status}
-            />
+            <UserAvatar size="sm" src={imageUrl} alt="avatar" status={status} />
           )}
-          {type === "direct"
-            ? conversation.profileId === params.conversationId
-              ? conversation.profile.name
-              : conversation.friend.name
-            : conversation.name}
+          {name}
         </div>
       </div>
       <div className="flex items-center gap-6">
@@ -164,7 +142,7 @@ const ChatHeader = ({ conversation, type, profileId }: ChatHeaderProps) => {
           popoverChildren={<></>}
         >
           {iconsArray.map((item, i) => {
-            if (i === 0 && !conversation) return null;
+            if (i === 0) return null;
             const messageIconIndex = i === 1;
             return (
               <PopoverTooltipContent
